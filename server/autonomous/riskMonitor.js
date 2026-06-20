@@ -1,4 +1,5 @@
 const alpaca = require('../execution/alpacaClient');
+const topstepx = require('../execution/topstepxClient');
 const http = require('http');
 const { getOpenTradeBySymbol, updateTradeOutcome, logTrade, updateTradeStopLoss } = require('../db/tradeLogger');
 const { isCryptoSymbol } = require('../data/dataAggregator');
@@ -13,6 +14,20 @@ const { calculateATR, getDynamicATRMultiplier } = require('../quantitative/atr')
 async function monitorRisk() {
   logger.info('🛡️ Running risk monitor for all positions...');
   
+  // --- TOPSTEP RULE: Auto-Flatten at 3:00 PM CT (15:00) ---
+  const now = new Date();
+  const options = { timeZone: 'America/Chicago', hour12: false, hour: 'numeric', minute: 'numeric' };
+  const ctTime = new Intl.DateTimeFormat('en-US', options).format(now);
+  const [ctHour, ctMinute] = ctTime.split(':').map(Number);
+
+  if (ctHour === 15 && ctMinute >= 0 && ctMinute <= 10) {
+    logger.warn('🕒 3:00 PM CT reached! Triggering TopstepX Auto-Flatten to prevent EOD violations.');
+    await topstepx.flattenAllPositions();
+    // In a full implementation, we would also clear the local DB state here.
+    return;
+  }
+  // --------------------------------------------------------
+
   let positions;
   try {
     positions = await alpaca.getOpenPositions();
