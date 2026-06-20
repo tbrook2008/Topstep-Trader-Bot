@@ -1,0 +1,12 @@
+.env
+node_modules/
+logs/
+data/trader.sqlite*
+*.log
+.DS_Store
+Thumbs.db
+dist/
+build/
+.vscode/
+.idea/
+server/db/database.sqlite*

@@ -1,0 +1,711 @@
+Starting backtest for symbols: AAPL, SPY, BTC/USD, ETH/USD, SOL/USD, QQQ, MSFT, TSLA, NVDA, DOGE/USD, AVAX/USD
+
+Fetching data for AAPL...
+[2026-06-11 10:37:13] [32minfo[39m: Alpaca client initialized {"mode":"PAPER"}
+Fetched 3004 bars for AAPL.
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.72","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634086 | Qty: 34.535061
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.34","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"AAPL","reason":"insufficient_momentum","ratio":1.3448131846949594}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.44","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"AAPL","reason":"insufficient_momentum","ratio":1.441447911803785}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.21","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"AAPL","reason":"insufficient_momentum","ratio":1.206237953390573}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"HIGH","ratio":"6.09","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634186 | Qty: 34.474437
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"HIGH","ratio":"2.27","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634189 | Qty: 34.59335
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.21","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"AAPL","reason":"insufficient_momentum","ratio":1.2096142811945325}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.34","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"AAPL","reason":"insufficient_momentum","ratio":1.3398342962043794}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.25","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"AAPL","reason":"insufficient_momentum","ratio":1.2537558778608364}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"HIGH","ratio":"4.46","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634444 | Qty: 34.095946
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"HIGH","ratio":"3.18","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634461 | Qty: 34.189203
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"HIGH","ratio":"5.53","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634493 | Qty: 34.034443
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"AAPL","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"AAPL","volume":"ABOVE_AVG","ratio":"1.93","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: AAPL | OrderID: mock-1781188634494 | Qty: 34.410378
+
+--- Results for AAPL ---
+Total Trades: 7
+Wins: 0, Losses: 7
+Win Rate: 0.00%
+Total PnL (dollars): $-160.0760
+
+Fetching data for SPY...
+Fetched 3135 bars for SPY.
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"4.28","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634731 | Qty: 13.593421
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.54","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634754 | Qty: 13.664189
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.58","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634766 | Qty: 13.68381
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"4.88","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634771 | Qty: 13.712719
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"4.98","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634781 | Qty: 13.664189
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"2.59","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634787 | Qty: 13.650554
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.53","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634787 | Qty: 13.606275
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.29","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"SPY","reason":"insufficient_momentum","ratio":1.2862377434361032}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.39","reason":"insufficient_momentum"}
+[2026-06-11 10:37:14] [33mwarn[39m: Trade blocked by volume profile {"symbol":"SPY","reason":"insufficient_momentum","ratio":1.387441820188544}
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.83","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634800 | Qty: 13.72175
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"2.57","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634805 | Qty: 13.65859
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"ABOVE_AVG","ratio":"1.97","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634855 | Qty: 13.676149
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"2.73","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634855 | Qty: 13.71648
+[2026-06-11 10:37:14] [32minfo[39m: Trade executor started {"symbol":"SPY","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:14] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:14] [32minfo[39m: Volume profile {"symbol":"SPY","volume":"HIGH","ratio":"3.64","reason":"ok"}
+[2026-06-11 10:37:14] [32minfo[39m: ✅ Market order submitted: SPY | OrderID: mock-1781188634861 | Qty: 13.743438
+
+--- Results for SPY ---
+Total Trades: 12
+Wins: 1, Losses: 11
+Win Rate: 8.33%
+Total PnL (dollars): $-118.0673
+
+Fetching data for BTC/USD...
+Fetched 7197 bars for BTC/USD.
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"19.98","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635039 | Qty: 0.162465
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"2.29","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635056 | Qty: 0.157247
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"7.77","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635075 | Qty: 0.159219
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"19.53","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635099 | Qty: 0.157828
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"7.26","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635188 | Qty: 0.159517
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"15.18","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635194 | Qty: 0.159569
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"14.80","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635211 | Qty: 0.158305
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"ABOVE_AVG","ratio":"1.75","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635258 | Qty: 0.158776
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"2.86","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635307 | Qty: 0.159256
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"4.44","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635351 | Qty: 0.161919
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635382 | Qty: 0.161661
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"3.71","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635424 | Qty: 0.16312
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"LOW","ratio":"0.00","reason":"insufficient_momentum"}
+[2026-06-11 10:37:15] [33mwarn[39m: Trade blocked by volume profile {"symbol":"BTC/USD","reason":"insufficient_momentum","ratio":0}
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"2.13","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635471 | Qty: 0.16273
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"13.75","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635481 | Qty: 0.160954
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"3.62","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635486 | Qty: 0.160746
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"5.33","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635491 | Qty: 0.159313
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"HIGH","ratio":"3.44","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: BTC/USD | OrderID: mock-1781188635522 | Qty: 0.163461
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"BTC/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"BTC/USD","volume":"ABOVE_AVG","ratio":"1.31","reason":"insufficient_momentum"}
+[2026-06-11 10:37:15] [33mwarn[39m: Trade blocked by volume profile {"symbol":"BTC/USD","reason":"insufficient_momentum","ratio":1.3111638954869356}
+
+--- Results for BTC/USD ---
+Total Trades: 17
+Wins: 6, Losses: 11
+Win Rate: 35.29%
+Total PnL (dollars): $81.8228
+
+Fetching data for ETH/USD...
+Fetched 6106 bars for ETH/USD.
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"6.64","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188635780 | Qty: 5.91821
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"6.27","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188635830 | Qty: 5.90835
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"18.04","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188635895 | Qty: 5.984913
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"LOW","ratio":"0.00","reason":"insufficient_momentum"}
+[2026-06-11 10:37:15] [33mwarn[39m: Trade blocked by volume profile {"symbol":"ETH/USD","reason":"insufficient_momentum","ratio":0}
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"LOW","ratio":"0.00","reason":"insufficient_momentum"}
+[2026-06-11 10:37:15] [33mwarn[39m: Trade blocked by volume profile {"symbol":"ETH/USD","reason":"insufficient_momentum","ratio":0}
+[2026-06-11 10:37:15] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:15] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:15] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"6.18","reason":"ok"}
+[2026-06-11 10:37:15] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188635961 | Qty: 6.136605
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636037 | Qty: 6.165361
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"12.30","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636041 | Qty: 6.179897
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"11.23","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636064 | Qty: 6.145118
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"9.31","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636066 | Qty: 6.182992
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"3.46","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636075 | Qty: 6.1267
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"15.40","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636094 | Qty: 6.061644
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"19.97","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636105 | Qty: 6.128164
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636109 | Qty: 6.147604
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636216 | Qty: 6.128298
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"19.73","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636271 | Qty: 6.110751
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"ETH/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"ETH/USD","volume":"HIGH","ratio":"5.11","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: ETH/USD | OrderID: mock-1781188636313 | Qty: 6.042953
+
+--- Results for ETH/USD ---
+Total Trades: 15
+Wins: 5, Losses: 10
+Win Rate: 33.33%
+Total PnL (dollars): $-194.1625
+
+Fetching data for SOL/USD...
+Fetched 6622 bars for SOL/USD.
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"5.04","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636624 | Qty: 153.805928
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"5.74","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636648 | Qty: 152.011608
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"16.79","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636648 | Qty: 150.759072
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"3.73","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636671 | Qty: 151.79632
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"ABOVE_AVG","ratio":"1.80","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636721 | Qty: 148.239947
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"ABOVE_AVG","ratio":"1.40","reason":"insufficient_momentum"}
+[2026-06-11 10:37:16] [33mwarn[39m: Trade blocked by volume profile {"symbol":"SOL/USD","reason":"insufficient_momentum","ratio":1.3981308625631084}
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"16.80","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636790 | Qty: 149.386061
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"2.31","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636798 | Qty: 150.35333
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636810 | Qty: 151.023182
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"9.99","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636845 | Qty: 155.336186
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636866 | Qty: 153.342012
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"14.51","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636923 | Qty: 158.05279
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"LOW","ratio":"0.13","reason":"insufficient_momentum"}
+[2026-06-11 10:37:16] [33mwarn[39m: Trade blocked by volume profile {"symbol":"SOL/USD","reason":"insufficient_momentum","ratio":0.12925740515914186}
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"19.59","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636938 | Qty: 155.094425
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"3.75","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636943 | Qty: 154.507804
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"2.33","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636950 | Qty: 153.488408
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"12.99","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636986 | Qty: 160.105142
+[2026-06-11 10:37:16] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:16] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:16] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"18.92","reason":"ok"}
+[2026-06-11 10:37:16] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188636989 | Qty: 159.320657
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"6.69","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188637002 | Qty: 154.200816
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: SOL/USD | OrderID: mock-1781188637008 | Qty: 154.305986
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"LOW","ratio":"0.08","reason":"insufficient_momentum"}
+[2026-06-11 10:37:17] [33mwarn[39m: Trade blocked by volume profile {"symbol":"SOL/USD","reason":"insufficient_momentum","ratio":0.0805376535473003}
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"SOL/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"SOL/USD","volume":"LOW","ratio":"0.00","reason":"insufficient_momentum"}
+[2026-06-11 10:37:17] [33mwarn[39m: Trade blocked by volume profile {"symbol":"SOL/USD","reason":"insufficient_momentum","ratio":0}
+
+--- Results for SOL/USD ---
+Total Trades: 18
+Wins: 6, Losses: 12
+Win Rate: 33.33%
+Total PnL (dollars): $74.3818
+
+Fetching data for QQQ...
+Fetched 3238 bars for QQQ.
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"2.41","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637232 | Qty: 14.137673
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"5.81","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637245 | Qty: 14.212015
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"ABOVE_AVG","ratio":"1.81","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637249 | Qty: 14.292044
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"2.35","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637260 | Qty: 14.316392
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"2.62","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637265 | Qty: 14.342675
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"4.18","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637273 | Qty: 14.270425
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"2.39","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637279 | Qty: 14.179369
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"ABOVE_AVG","ratio":"1.26","reason":"insufficient_momentum"}
+[2026-06-11 10:37:17] [33mwarn[39m: Trade blocked by volume profile {"symbol":"QQQ","reason":"insufficient_momentum","ratio":1.2625277160909465}
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"ABOVE_AVG","ratio":"1.37","reason":"insufficient_momentum"}
+[2026-06-11 10:37:17] [33mwarn[39m: Trade blocked by volume profile {"symbol":"QQQ","reason":"insufficient_momentum","ratio":1.3739938091665465}
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"ABOVE_AVG","ratio":"1.55","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637292 | Qty: 14.360698
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"ABOVE_AVG","ratio":"1.78","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637302 | Qty: 14.309837
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"ABOVE_AVG","ratio":"1.96","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637321 | Qty: 14.489604
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"5.21","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637331 | Qty: 14.238118
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"4.93","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637331 | Qty: 14.271647
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"10.55","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637332 | Qty: 14.29613
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"QQQ","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"QQQ","volume":"HIGH","ratio":"4.03","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: QQQ | OrderID: mock-1781188637338 | Qty: 14.327058
+
+--- Results for QQQ ---
+Total Trades: 14
+Wins: 2, Losses: 12
+Win Rate: 14.29%
+Total PnL (dollars): $-191.9914
+
+Fetching data for MSFT...
+Fetched 3081 bars for MSFT.
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"MSFT","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"MSFT","volume":"HIGH","ratio":"2.12","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: MSFT | OrderID: mock-1781188637532 | Qty: 24.777007
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"MSFT","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"MSFT","volume":"ABOVE_AVG","ratio":"1.44","reason":"insufficient_momentum"}
+[2026-06-11 10:37:17] [33mwarn[39m: Trade blocked by volume profile {"symbol":"MSFT","reason":"insufficient_momentum","ratio":1.4355702404010482}
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"MSFT","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"MSFT","volume":"ABOVE_AVG","ratio":"1.35","reason":"insufficient_momentum"}
+[2026-06-11 10:37:17] [33mwarn[39m: Trade blocked by volume profile {"symbol":"MSFT","reason":"insufficient_momentum","ratio":1.353427556283335}
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"MSFT","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"MSFT","volume":"HIGH","ratio":"4.64","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: MSFT | OrderID: mock-1781188637643 | Qty: 25.107334
+[2026-06-11 10:37:17] [32minfo[39m: Trade executor started {"symbol":"MSFT","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:17] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:17] [32minfo[39m: Volume profile {"symbol":"MSFT","volume":"HIGH","ratio":"3.44","reason":"ok"}
+[2026-06-11 10:37:17] [32minfo[39m: ✅ Market order submitted: MSFT | OrderID: mock-1781188637650 | Qty: 25.504999
+
+--- Results for MSFT ---
+Total Trades: 3
+Wins: 2, Losses: 1
+Win Rate: 66.67%
+Total PnL (dollars): $51.4161
+
+Fetching data for TSLA...
+Fetched 3214 bars for TSLA.
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"5.50","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638433 | Qty: 25.46538
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"2.57","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638457 | Qty: 25.43882
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"2.32","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638464 | Qty: 25.539522
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"2.12","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638472 | Qty: 25.783828
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"2.44","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638483 | Qty: 26.212327
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"ABOVE_AVG","ratio":"1.40","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"TSLA","reason":"insufficient_momentum","ratio":1.3951734611777364}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"ABOVE_AVG","ratio":"1.26","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"TSLA","reason":"insufficient_momentum","ratio":1.2646164363639059}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"ABOVE_AVG","ratio":"1.54","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638489 | Qty: 26.159863
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"ABOVE_AVG","ratio":"1.32","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"TSLA","reason":"insufficient_momentum","ratio":1.3247468348400986}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"ABOVE_AVG","ratio":"1.42","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"TSLA","reason":"insufficient_momentum","ratio":1.4172582042590707}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"3.17","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638527 | Qty: 25.823112
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"ABOVE_AVG","ratio":"1.40","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"TSLA","reason":"insufficient_momentum","ratio":1.4026974951830442}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"2.35","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638535 | Qty: 25.814446
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"12.44","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638549 | Qty: 25.935964
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"3.26","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638552 | Qty: 25.70628
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"TSLA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"TSLA","volume":"HIGH","ratio":"2.35","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: TSLA | OrderID: mock-1781188638553 | Qty: 26.248097
+
+--- Results for TSLA ---
+Total Trades: 11
+Wins: 4, Losses: 7
+Win Rate: 36.36%
+Total PnL (dollars): $39.4504
+
+Fetching data for NVDA...
+Fetched 3248 bars for NVDA.
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"5.30","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638781 | Qty: 48.03074
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.33","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.3313769811370635}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.29","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.293261163051844}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"3.27","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638804 | Qty: 48.966801
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"3.55","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638817 | Qty: 49.21502
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"2.27","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638826 | Qty: 48.795293
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.76","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638832 | Qty: 48.498957
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.41","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.4066912593097418}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.55","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638851 | Qty: 49.055678
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.42","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.42203147420414}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.32","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.3158474968684546}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.78","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638857 | Qty: 49.261084
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.21","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.2089608332662212}
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"2.23","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638877 | Qty: 50.020008
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"2.78","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638879 | Qty: 50.065085
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"5.86","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638887 | Qty: 49.380278
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"HIGH","ratio":"2.55","reason":"ok"}
+[2026-06-11 10:37:18] [32minfo[39m: ✅ Market order submitted: NVDA | OrderID: mock-1781188638888 | Qty: 49.45843
+[2026-06-11 10:37:18] [32minfo[39m: Trade executor started {"symbol":"NVDA","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:18] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:18] [32minfo[39m: Volume profile {"symbol":"NVDA","volume":"ABOVE_AVG","ratio":"1.28","reason":"insufficient_momentum"}
+[2026-06-11 10:37:18] [33mwarn[39m: Trade blocked by volume profile {"symbol":"NVDA","reason":"insufficient_momentum","ratio":1.275857903845705}
+
+--- Results for NVDA ---
+Total Trades: 11
+Wins: 2, Losses: 9
+Win Rate: 18.18%
+Total PnL (dollars): $-158.0442
+
+Fetching data for DOGE/USD...
+Fetched 6104 bars for DOGE/USD.
+[2026-06-11 10:37:19] [32minfo[39m: Trade executor started {"symbol":"DOGE/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:19] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:19] [32minfo[39m: Volume profile {"symbol":"DOGE/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:19] [32minfo[39m: ✅ Market order submitted: DOGE/USD | OrderID: mock-1781188639049 | Qty: 115498.114493
+[2026-06-11 10:37:19] [32minfo[39m: Trade executor started {"symbol":"DOGE/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:19] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:19] [32minfo[39m: Volume profile {"symbol":"DOGE/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:19] [32minfo[39m: ✅ Market order submitted: DOGE/USD | OrderID: mock-1781188639305 | Qty: 119843.86741
+[2026-06-11 10:37:19] [32minfo[39m: Trade executor started {"symbol":"DOGE/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:19] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:19] [32minfo[39m: Volume profile {"symbol":"DOGE/USD","volume":"HIGH","ratio":"11.27","reason":"ok"}
+[2026-06-11 10:37:19] [32minfo[39m: ✅ Market order submitted: DOGE/USD | OrderID: mock-1781188639326 | Qty: 120599.839482
+[2026-06-11 10:37:19] [32minfo[39m: Trade executor started {"symbol":"DOGE/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:19] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:19] [32minfo[39m: Volume profile {"symbol":"DOGE/USD","volume":"HIGH","ratio":"12.29","reason":"ok"}
+[2026-06-11 10:37:19] [32minfo[39m: ✅ Market order submitted: DOGE/USD | OrderID: mock-1781188639369 | Qty: 119729.292071
+[2026-06-11 10:37:19] [32minfo[39m: Trade executor started {"symbol":"DOGE/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:19] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:19] [32minfo[39m: Volume profile {"symbol":"DOGE/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:19] [32minfo[39m: ✅ Market order submitted: DOGE/USD | OrderID: mock-1781188639453 | Qty: 118462.358586
+
+--- Results for DOGE/USD ---
+Total Trades: 5
+Wins: 0, Losses: 5
+Win Rate: 0.00%
+Total PnL (dollars): $0.0000
+
+Fetching data for AVAX/USD...
+Fetched 6266 bars for AVAX/USD.
+[2026-06-11 10:37:19] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:19] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:19] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"HIGH","ratio":"9.99","reason":"ok"}
+[2026-06-11 10:37:19] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188639856 | Qty: 1489.626983
+[2026-06-11 10:37:20] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:20] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:20] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"HIGH","ratio":"3.77","reason":"ok"}
+[2026-06-11 10:37:20] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188640022 | Qty: 1485.438249
+[2026-06-11 10:37:20] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"SHORT","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:20] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:20] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:20] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188640024 | Qty: 1490.090896
+[2026-06-11 10:37:20] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:20] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:20] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"HIGH","ratio":"3.25","reason":"ok"}
+[2026-06-11 10:37:20] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188640067 | Qty: 1502.586703
+[2026-06-11 10:37:20] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"SHORT","regime":"mean-reverting","strategy":"OrnsteinUhlenbeck"}
+[2026-06-11 10:37:20] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:20] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"unknown","ratio":"1.00","reason":"zero_avg_volume"}
+[2026-06-11 10:37:20] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188640145 | Qty: 1530.59077
+[2026-06-11 10:37:20] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:20] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:20] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:20] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188640146 | Qty: 1522.630863
+[2026-06-11 10:37:20] [32minfo[39m: Trade executor started {"symbol":"AVAX/USD","direction":"LONG","regime":"momentum","strategy":"KalmanFilter"}
+[2026-06-11 10:37:20] [32minfo[39m: Kelly sizing {"calibratedProb":"65.9%","profitFactor":"1.50","fullKelly":"43.13%","fractionalKelly":"10.78%","clampedFraction":"10.78%","positionSize":10782.8}
+[2026-06-11 10:37:20] [32minfo[39m: Volume profile {"symbol":"AVAX/USD","volume":"HIGH","ratio":"20.00","reason":"ok"}
+[2026-06-11 10:37:20] [32minfo[39m: ✅ Market order submitted: AVAX/USD | OrderID: mock-1781188640224 | Qty: 1512.358235
+
+--- Results for AVAX/USD ---
+Total Trades: 7
+Wins: 0, Losses: 7
+Win Rate: 0.00%
+Total PnL (dollars): $-301.2434
+
+Backtest completed.

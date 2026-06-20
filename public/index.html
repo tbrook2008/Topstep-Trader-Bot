@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Trader — Minimal</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: #0a0a0c;
+      --surface2: #121214;
+      --text: #ededed;
+      --text-muted: #888888;
+      --accent: #ffffff;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --border: rgba(255,255,255,0.06);
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+    
+    /* Subtle background glow */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      font-size: 16px;
+    }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+    }
+    .status-dot.dead {
+      background: var(--red);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: var(--surface2); }
+    .btn-kill.active { background: rgba(239, 68, 68, 0.1); color: var(--red); border-color: rgba(239, 68, 68, 0.2); }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    .stat-card {
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 400;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.03em;
+    }
+    .val-green { color: var(--green); }
+    .val-red { color: var(--red); }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    @media (max-width: 900px) {
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Feeds */
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .card-row:last-child { margin-bottom: 0; }
+    
+    .symbol { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; }
+    .time { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+    
+    .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--surface2);
+    }
+    .tag-long { color: var(--green); background: rgba(34, 197, 94, 0.1); }
+    .tag-short { color: var(--red); background: rgba(239, 68, 68, 0.1); }
+    
+    .thesis {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    /* Terminal */
+    .terminal {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #a3a3a3;
+      height: 300px;
+      overflow-y: auto;
+      line-height: 1.4;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    }
+    .terminal-line { margin-bottom: 4px; word-wrap: break-word; }
+    .terminal-info { color: #3b82f6; }
+    .terminal-warn { color: #f59e0b; }
+    .terminal-error { color: #ef4444; }
+
+    /* Minimal Table */
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; padding: 12px 16px;
+      font-size: 11px; font-weight: 500;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    tr:last-child td { border-bottom: none; }
+    .empty { padding: 40px; text-align: center; color: var(--text-muted); font-size: 13px; border: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="logo">
+      <div class="status-dot" id="status-dot"></div>
+      AI TRADER <span style="font-weight:300; color:var(--text-muted)">MINIMAL</span>
+    </div>
+    <div class="header-actions">
+      <span class="badge" id="mode-badge">PAPER</span>
+      <button class="btn" id="run-btn" onclick="runNow()">Run Cycle</button>
+      <button class="btn btn-kill" id="kill-btn" onclick="toggleKillSwitch()">Halt</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Account Balance</div>
+      <div class="stat-value" id="stat-balance">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Daily P&L</div>
+      <div class="stat-value" id="stat-pnl">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Win Rate</div>
+      <div class="stat-value" id="stat-winrate">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total Trades</div>
+      <div class="stat-value" id="stat-trades">—</div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div>
+      <div class="section-title">
+        Latest AI Decisions <span id="decisions-count">0</span>
+      </div>
+      <div class="feed-list" id="decisions-feed">
+        <div class="card empty">No recent decisions</div>
+      </div>
+    </div>
+    
+    <div>
+      <div class="section-title">
+        Execution Log <span id="trades-count">0</span>
+      </div>
+      <div class="card" style="padding:0">
+        <table>
+          <thead>
+            <tr>
+              <th>Date / Time</th>
+              <th>Asset</th>
+              <th>Action</th>
+              <th>P&L</th>
+            </tr>
+          </thead>
+          <tbody id="trades-tbody">
+            <tr><td colspan="4" class="empty">No trades executed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <div class="section-title">
+      Live System Terminal <span style="color:var(--green); animation: pulse 2s infinite">●</span>
+    </div>
+    <div class="terminal" id="terminal-out">
+      <div class="terminal-line" style="color:var(--text-muted)">Connecting to AI engine...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  let killActive = false;
+
+  async function fetchStatus() {
+    try {
+      const r = await fetch('/api/status');
+      const d = await r.json();
+
+      killActive = d.killSwitch;
+      const btn = $('kill-btn');
+      if (killActive) {
+        btn.textContent = 'Resume';
+        btn.className = 'btn btn-kill active';
+        $('status-dot').className = 'status-dot dead';
+      } else {
+        btn.textContent = 'Halt';
+        btn.className = 'btn btn-kill';
+        $('status-dot').className = 'status-dot';
+      }
+
+      $('mode-badge').textContent = d.mode;
+      
+      $('stat-balance').textContent = '$' + Number(d.balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      
+      const pnl = parseFloat(d.dailyPnl || 0);
+      const pnlEl = $('stat-pnl');
+      pnlEl.textContent = (pnl >= 0 ? '+' : '') + '$' + pnl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      pnlEl.className = 'stat-value ' + (pnl > 0 ? 'val-green' : pnl < 0 ? 'val-red' : '');
+
+      $('stat-trades').textContent = d.totalTrades;
+      
+      const wins = d.totalWins || 0, total = d.totalTrades || 0;
+      if (total > 0) {
+        const wr = (wins / total * 100).toFixed(1);
+        $('stat-winrate').textContent = wr + '%';
+      }
+    } catch(e) {
+      $('status-dot').className = 'status-dot dead';
+    }
+  }
+
+  async function fetchDecisions() {
+    const r = await fetch('/api/decisions?limit=10');
+    const decisions = await r.json();
+    $('decisions-count').textContent = decisions.length;
+
+    if (!decisions.length) return;
+
+    $('decisions-feed').innerHTML = decisions.map(d => {
+      const dir = (d.direction || 'NO_TRADE').toUpperCase();
+      const tagClass = dir === 'LONG' ? 'tag-long' : dir === 'SHORT' ? 'tag-short' : '';
+      const time = new Date(d.timestamp).toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+      const score = d.composite_score?.toFixed(1) || '—';
+      
+      return `
+        <div class="card" style="border-left: 2px solid ${d.approved ? 'var(--green)' : 'var(--border)'}">
+          <div class="card-row">
+            <span class="symbol">${d.symbol}</span>
+            <span class="time">${time}</span>
+          </div>
+          <div class="card-row" style="margin-top: 12px;">
+            <span class="tag ${tagClass}">${dir}</span>
+            <span style="font-family:'JetBrains Mono'; font-size:11px; color:var(--text-muted)">Score: ${score}</span>
+          </div>
+          ${d.gemini_thesis ? `<div class="thesis">${d.gemini_thesis}</div>` : ''}
+        </div>`;
+    }).join('');
+  }
+
+  async function fetchTrades() {
+    const r = await fetch('/api/trades?limit=15');
+    const trades = await r.json();
+    $('trades-count').textContent = trades.length;
+
+    if (!trades.length) return;
+
+    $('trades-tbody').innerHTML = trades.map(t => {
+      const dt = new Date(t.timestamp);
+      const time = dt.toLocaleDateString('en-US', { month:'short', day:'numeric' })
+               + ', ' + dt.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+      const pnl = t.pnl != null ? (t.pnl >= 0 ? `+$${t.pnl.toFixed(2)}` : `-$${Math.abs(t.pnl).toFixed(2)}`) : '—';
+      const pnlCl = t.pnl > 0 ? 'val-green' : t.pnl < 0 ? 'val-red' : '';
+      const dirCl = t.direction === 'LONG' ? 'val-green' : 'val-red';
+      
+      return `<tr>
+        <td style="color:var(--text-muted)">${time}</td>
+        <td>${t.symbol}</td>
+        <td class="${dirCl}">${t.direction}</td>
+        <td class="${pnlCl}">${pnl}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function toggleKillSwitch() {
+    const action = killActive ? 'deactivate' : 'activate';
+    await fetch('/api/killswitch', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, reason: 'Manual toggle' }),
+    });
+    fetchStatus();
+  }
+
+  async function fetchLogs() {
+    try {
+      const r = await fetch('/api/logs');
+      const d = await r.json();
+      if (!d.logs || !d.logs.length) return;
+      
+      const term = $('terminal-out');
+      // Only update if content changed to avoid scrolling reset
+      const newHtml = d.logs.map(l => {
+        let cls = '';
+        if (l.includes(' info:')) cls = 'terminal-info';
+        if (l.includes(' warn:')) cls = 'terminal-warn';
+        if (l.includes(' error:')) cls = 'terminal-error';
+        return `<div class="terminal-line ${cls}">${l}</div>`;
+      }).join('');
+      
+      if (term.innerHTML !== newHtml) {
+        const isAtBottom = term.scrollHeight - term.scrollTop <= term.clientHeight + 20;
+        term.innerHTML = newHtml;
+        if (isAtBottom) term.scrollTop = term.scrollHeight;
+      }
+    } catch(e) {}
+  }
+
+  async function runNow() {
+    $('run-btn').textContent = '...';
+    await fetch('/api/run-now', { method: 'POST' });
+    setTimeout(() => { $('run-btn').textContent = 'Run Cycle'; refreshAll(); }, 2000);
+  }
+
+  function refreshAll() { fetchStatus(); fetchDecisions(); fetchTrades(); }
+  refreshAll();
+  fetchLogs();
+  setInterval(refreshAll, 10000);
+  setInterval(fetchLogs, 2500); // Poll logs much faster for a live feel
+</script>
+</body>
+</html>
