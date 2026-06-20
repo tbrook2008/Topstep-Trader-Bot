@@ -2,7 +2,7 @@ require('dotenv').config();
 const { aggregate, isCryptoSymbol } = require('../data/dataAggregator');
 const { execute }      = require('../execution/tradeExecutor');
 const alpacaClient     = require('../execution/alpacaClient');
-const { logDecision }  = require('../db/tradeLogger');
+const { logDecision, getDailyPnl }  = require('../db/tradeLogger');
 const killSwitch       = require('../risk/killSwitch');
 const logger           = require('../utils/logger');
 const { checkCorrelation } = require('../risk/correlation');
@@ -63,6 +63,21 @@ function startStream() {
 
 async function processSymbol(symbol, latestBar) {
   try {
+    // Topstep Time Constraint: NY Volatility Window only
+    const now = new Date();
+    const options = { timeZone: 'America/Chicago', hour12: false, hour: 'numeric', minute: 'numeric' };
+    const ctTime = new Intl.DateTimeFormat('en-US', options).format(now);
+    const [ctHour, ctMinute] = ctTime.split(':').map(Number);
+    const timeInMinutes = ctHour * 60 + ctMinute;
+
+    // 8:30 AM CT = 510 mins, 3:00 PM CT = 900 mins
+    if (timeInMinutes < 510 || timeInMinutes >= 900) {
+      return; // Silently skip if outside NY market hours
+    }
+
+    // Auto-check Daily PnL Limits (Profit Cap and Loss Limit)
+    killSwitch.autoCheckDailyLimits(getDailyPnl());
+
     if (killSwitch.isActive()) return;
 
     // 1. Aggregate market data
