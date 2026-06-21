@@ -46,7 +46,7 @@ function analyzeVolume(history, direction, symbol) {
   }
 
   const params = getSymbolParams(symbol);
-  const minVolumeRatio = params.minVolumeRatio || 2.0;
+  const minVolumeRatio = params.minVolumeRatio || 1.2;
 
   const volumes  = history.map(b => b.volume);
   const closes   = history.map(b => b.close);

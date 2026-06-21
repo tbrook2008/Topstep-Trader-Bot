@@ -17,8 +17,8 @@ function startStream() {
   const cryptoStream = client.crypto_stream_v1beta3;
 
   // Prevent MaxListenersExceededWarning on WebSocket reconnect loops
-  stockStream.setMaxListeners  && stockStream.setMaxListeners(20);
-  cryptoStream.setMaxListeners && cryptoStream.setMaxListeners(20);
+  stockStream.setMaxListeners  && stockStream.setMaxListeners(0);
+  cryptoStream.setMaxListeners && cryptoStream.setMaxListeners(0);
 
   stockStream.onConnect(() => {
     logger.info('Connected to Alpaca Stock WebSocket');

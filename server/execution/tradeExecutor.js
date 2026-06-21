@@ -3,7 +3,7 @@
  * Full trade execution pipeline
  */
 require('dotenv').config();
-const alpaca        = require('./alpacaClient'); // Kept for data backward compatibility
+const alpaca        = require('./alpacaClient');
 const topstepx      = require('./topstepxClient');
 const kelly         = require('../risk/kellyCriterion');
 const validator     = require('../risk/validator');
@@ -52,44 +52,39 @@ async function execute({ bundle }) {
 
   // Step 1: Advanced Regime Detection (Hurst Exponent)
   const H = hurst.calculateHurst(history);
-  const regime = hurst.classifyRegime(history);
-  const isTrending = regime === 'trending';
+  const regimeDetection = hurst.classifyRegime(history);
+  const isTrending = regimeDetection === 'trending';
   
-  // Step 2: Strict Quantitative Trigger
+  // Step 2: Synthesize Signals (DECOUPLED TRIGGERS FOR PROFITABILITY)
   let direction = 'NO_TRADE';
-  let strategy = '';
+  let strategy  = 'None';
+  let regime    = 'none'; // 'trending' or 'mean-reverting'
 
-  if (regime === 'chop') {
-    return { executed: false, reason: `Chop regime detected (H=${H.toFixed(2)}). Sitting on hands to preserve capital.` };
+  const macdDir = macd.evaluate(history);
+  const kalmanDir = kalman.evaluate(history, symbol);
+  const ouDir = ouModel.evaluate(history, symbol);
+  const bbRsiDir = bollingerRsi.evaluate(history);
+
+  // Require MACD + High Volume + Kalman
+  const volClass = classifyVolume(history).toUpperCase();
+
+  if (kalmanDir !== 'NO_TRADE' && macdDir === kalmanDir && (volClass === 'HIGH' || volClass === 'ABOVE_AVG')) {
+    direction = kalmanDir;
+    regime = 'trending';
+    strategy = 'Kalman+MACD';
   }
 
-  if (regime === 'trending') {
-    const macdDir = macd.evaluate(history);
-    const kalmanDir = kalman.evaluate(history, symbol);
-    const volClass = classifyVolume(history).toUpperCase();
-    
-    if (kalmanDir !== 'NO_TRADE' && (volClass === 'HIGH' || volClass === 'ABOVE_AVG')) {
-      direction = kalmanDir;
-      strategy = 'Kalman';
-    } else if (macdDir !== 'NO_TRADE' && (volClass === 'HIGH' || volClass === 'ABOVE_AVG')) {
-      direction = macdDir;
-      strategy = 'MACD';
-    }
-  } else if (regime === 'mean-reverting') {
-    const bbRsiDir = bollingerRsi.evaluate(history);
-    const ouDir = ouModel.evaluate(history, symbol);
-    
-    if (ouDir !== 'NO_TRADE') {
+  // Require Bollinger Bands extreme + OU Model
+  if (direction === 'NO_TRADE') {
+    if (ouDir !== 'NO_TRADE' && bbRsiDir === ouDir) {
       direction = ouDir;
-      strategy = 'OU-Model';
-    } else if (bbRsiDir !== 'NO_TRADE') {
-      direction = bbRsiDir;
-      strategy = 'Bollinger-RSI';
+      regime = 'mean-reverting';
+      strategy = 'OU+Bollinger';
     }
   }
 
   if (direction === 'NO_TRADE') {
-    return { executed: false, reason: `Strict confirmation models not met for ${regime} regime` };
+    return { executed: false, reason: `Strict confirmation models not met for ${regimeDetection} regime` };
   }
 
   if (isTrending && history && history.length > 0) {
@@ -113,28 +108,37 @@ async function execute({ bundle }) {
     strategy
   });
 
-  // Step 2: Fetch live account data (TopstepX)
-  let account = { portfolioValue: 50000, buyingPower: 50000, tradingBlocked: false };
-  let openPositions = [];
+  // Step 2: Fetch live account data
+  let account, openPositions;
   try {
-    // We default to 50k for risk math until exact API schema is mapped
-    const balanceData = await topstepx.getAccountBalance();
-    if (balanceData && balanceData.balance) {
-      account.portfolioValue = balanceData.balance;
-      account.buyingPower = balanceData.balance;
-    }
+    [account, openPositions] = await Promise.all([
+      alpaca.getAccount(),
+      alpaca.getOpenPositions(),
+    ]);
   } catch (err) {
-    logger.error('Failed to fetch TopstepX account data', { error: err.message });
+    logger.error('Failed to fetch Alpaca account data', { error: err.message });
+    return { executed: false, reason: 'Alpaca account fetch failed' };
   }
 
   const liveBalance = account.portfolioValue;
 
-  // Step 3: Fixed Sizing for Futures (e.g. 1 Mini contract)
-  // TopstepX restricts max position. For safety, we hardcode 1 contract per signal.
-  const sizing = {
-    qty: 1, // 1 Contract
-    positionDollars: price * 1, // Approximated
-  };
+  if (account.tradingBlocked) {
+    logger.warn('Account trading is blocked — skipping', { symbol });
+    return { executed: false, reason: 'Alpaca account trading blocked' };
+  }
+
+  // Step 3: Kelly sizing (no consensus score, default 80 confidence)
+  const sizing = kelly.getPositionSize(symbol, price, liveBalance, 80, account.buyingPower);
+  
+  // Alpaca does not support fractional shorting. We must floor the quantity.
+  if (direction === 'SHORT') {
+    sizing.qty = Math.floor(sizing.qty);
+  }
+
+  if (sizing.qty === 0) {
+    logger.warn('Insufficient buying power for trade', { symbol, buyingPower: account.buyingPower });
+    return { executed: false, reason: 'Insufficient buying power' };
+  }
   
   // Step 4: Validation
   const validation = await validator.runChecks({
@@ -167,7 +171,6 @@ async function execute({ bundle }) {
 
   // Step 5b: Volume Profile check
   const volAnalysis = analyzeVolume(bundle.history, direction, symbol);
-  const volClass    = classifyVolume(bundle.history);
   logger.info('Volume profile', { symbol, volume: volClass, ratio: volAnalysis.ratio?.toFixed(2), reason: volAnalysis.reason });
   if (!volAnalysis.supported) {
     logger.warn('Trade blocked by volume profile', { symbol, reason: volAnalysis.reason, ratio: volAnalysis.ratio });
@@ -201,9 +204,10 @@ async function execute({ bundle }) {
 
     const topstepSide = direction === 'LONG' ? 'Buy' : 'Sell';
     order = await topstepx.placeMarketOrder(futuresSymbol, topstepSide, sizing.qty);
-    logger.info(`✅ TopstepX Market order submitted: ${futuresSymbol} | Qty: ${sizing.qty}`);
+    logger.info(`✅ Market order submitted to TopstepX: ${futuresSymbol} | OrderID: ${order.orderId} | Qty: ${sizing.qty}`);
   } catch (err) {
-    logger.error('❌ TopstepX Order submission failed', { symbol, error: err.message });
+    const errorDetails = err.response ? err.response.data : err.message;
+    logger.error('❌ Order submission failed on TopstepX', { symbol, error: err.message, details: errorDetails });
     return { executed: false, reason: `TopstepX Error: ${err.message}` };
   }
 
@@ -215,7 +219,7 @@ async function execute({ bundle }) {
     entryPrice:     price,
     stopLoss:       parseFloat(atrStop.toFixed(4)),
     targetPrice:    parseFloat(atrTarget.toFixed(4)),
-    alpacaOrderId:  order && order.orderId ? order.orderId : `topstep_${Date.now()}`,
+    alpacaOrderId:  order.orderId,
     decisionId:     strategy, // Use strategy name as decision ID for logging
     mode,
   });

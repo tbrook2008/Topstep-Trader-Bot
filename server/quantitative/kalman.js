@@ -98,7 +98,7 @@ function evaluate(history, symbol) {
   if (!history || history.length < 50) return 'NO_TRADE';
 
   const params = getSymbolParams(symbol);
-  const kalmanThreshold = params.kalmanThreshold || 5.0;
+  const kalmanThreshold = params.kalmanThreshold || 2.0;
 
   // We tune R based on recent volatility to make the filter adaptive
   const closes = history.map(b => b.close);

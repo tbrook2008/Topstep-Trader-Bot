@@ -1,6 +1,6 @@
 {
   "SPY": {
-    "minVolumeRatio": 1.5,
+    "minVolumeRatio": 1.1,
     "zScoreThreshold": 1.5,
     "kalmanThreshold": 1.5,
     "trendPeriod": 50,
@@ -8,7 +8,7 @@
     "dynamicRR_MeanRev": 1
   },
   "QQQ": {
-    "minVolumeRatio": 1.2,
+    "minVolumeRatio": 1.1,
     "zScoreThreshold": 1.5,
     "kalmanThreshold": 1.5,
     "trendPeriod": 20,
@@ -16,7 +16,7 @@
     "dynamicRR_MeanRev": 1.5
   },
   "DIA": {
-    "minVolumeRatio": 1.2,
+    "minVolumeRatio": 1.1,
     "zScoreThreshold": 1.5,
     "kalmanThreshold": 1.5,
     "trendPeriod": 20,
@@ -24,33 +24,33 @@
     "dynamicRR_MeanRev": 1
   },
   "IWM": {
-    "minVolumeRatio": 2,
-    "zScoreThreshold": 2.5,
-    "kalmanThreshold": 3,
+    "minVolumeRatio": 1.2,
+    "zScoreThreshold": 2.0,
+    "kalmanThreshold": 2.0,
     "trendPeriod": 20,
     "dynamicRR_Trending": 2,
     "dynamicRR_MeanRev": 1
   },
   "GLD": {
-    "minVolumeRatio": 1.5,
-    "zScoreThreshold": 2,
+    "minVolumeRatio": 1.2,
+    "zScoreThreshold": 2.0,
     "kalmanThreshold": 1.5,
     "trendPeriod": 20,
     "dynamicRR_Trending": 2,
     "dynamicRR_MeanRev": 1
   },
   "USO": {
-    "minVolumeRatio": 2,
-    "zScoreThreshold": 2,
-    "kalmanThreshold": 5,
+    "minVolumeRatio": 1.2,
+    "zScoreThreshold": 2.0,
+    "kalmanThreshold": 2.0,
     "trendPeriod": 20,
     "dynamicRR_Trending": 2,
     "dynamicRR_MeanRev": 1
   },
   "TLT": {
-    "minVolumeRatio": 1.2,
-    "zScoreThreshold": 2.5,
-    "kalmanThreshold": 3,
+    "minVolumeRatio": 1.1,
+    "zScoreThreshold": 2.0,
+    "kalmanThreshold": 2.0,
     "trendPeriod": 20,
     "dynamicRR_Trending": 2,
     "dynamicRR_MeanRev": 1

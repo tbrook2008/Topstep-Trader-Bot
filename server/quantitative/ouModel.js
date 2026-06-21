@@ -91,7 +91,7 @@ function evaluate(history, symbol) {
   if (!history || history.length < 100) return 'NO_TRADE';
 
   const symbolParams = getSymbolParams(symbol);
-  const zScoreThreshold = symbolParams.zScoreThreshold || 2.5;
+  const zScoreThreshold = symbolParams.zScoreThreshold || 2.0;
 
   const closes = history.map(b => b.close);
   // Calibrate on the last 100 bars to capture the current local regime
