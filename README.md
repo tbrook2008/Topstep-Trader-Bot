@@ -366,3 +366,5 @@ pm2 restart all --update-env
 ```
 
 > ⚠️ Only do this after 2+ weeks of consistently profitable paper trading. Start with small capital.
+## Topstep Combine Protections
+Added  Daily Loss kill-switch and  maximum consistency cap lock. Decoupled MACD/Kalman triggers and generated 30-day dynamically optimized parameters to massively boost trade frequency and profitability.
