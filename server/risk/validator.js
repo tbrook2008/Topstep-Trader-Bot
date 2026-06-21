@@ -40,6 +40,9 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
   // Compute Correlation
   const correlationPass = await checkCorrelation(symbol);
 
+  // Auto-enforce Prop Firm Limits (Daily Loss, Consistency Cap)
+  killSwitch.autoCheckDailyLimits(dailyPnl);
+
   const checks = [
     {
       name: 'Kill Switch OFF',

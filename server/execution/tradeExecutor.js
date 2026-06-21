@@ -64,23 +64,27 @@ async function execute({ bundle }) {
   }
 
   if (regime === 'trending') {
-    // Require MACD + High Volume + Kalman
     const macdDir = macd.evaluate(history);
     const kalmanDir = kalman.evaluate(history, symbol);
-    const volClass = classifyVolume(history);
+    const volClass = classifyVolume(history).toUpperCase();
     
-    if (kalmanDir !== 'NO_TRADE' && macdDir === kalmanDir && (volClass === 'high' || volClass === 'climax')) {
+    if (kalmanDir !== 'NO_TRADE' && (volClass === 'HIGH' || volClass === 'ABOVE_AVG')) {
       direction = kalmanDir;
+      strategy = 'Kalman';
+    } else if (macdDir !== 'NO_TRADE' && (volClass === 'HIGH' || volClass === 'ABOVE_AVG')) {
+      direction = macdDir;
+      strategy = 'MACD';
     }
-    if (direction !== 'NO_TRADE') strategy = 'Kalman+MACD';
   } else if (regime === 'mean-reverting') {
-    // Require Bollinger Bands extreme + OU Model
     const bbRsiDir = bollingerRsi.evaluate(history);
     const ouDir = ouModel.evaluate(history, symbol);
     
-    if (bbRsiDir === ouDir && ouDir !== 'NO_TRADE') {
+    if (ouDir !== 'NO_TRADE') {
       direction = ouDir;
-      strategy = 'OU+Bollinger';
+      strategy = 'OU-Model';
+    } else if (bbRsiDir !== 'NO_TRADE') {
+      direction = bbRsiDir;
+      strategy = 'Bollinger-RSI';
     }
   }
 
@@ -185,10 +189,15 @@ async function execute({ bundle }) {
   // Step 7: Execute via TopstepX
   let order;
   try {
-    // Note: We need to map SPY -> ES, QQQ -> NQ eventually
+    // Map stock tickers from Alpaca to CME Futures symbols for Topstep
     let futuresSymbol = symbol;
     if (symbol === 'QQQ') futuresSymbol = 'NQ';
-    if (symbol === 'SPY') futuresSymbol = 'ES';
+    else if (symbol === 'SPY') futuresSymbol = 'ES';
+    else if (symbol === 'DIA') futuresSymbol = 'YM';
+    else if (symbol === 'IWM') futuresSymbol = 'RTY';
+    else if (symbol === 'GLD') futuresSymbol = 'GC';
+    else if (symbol === 'USO') futuresSymbol = 'CL';
+    else if (symbol === 'TLT') futuresSymbol = 'ZB';
 
     const topstepSide = direction === 'LONG' ? 'Buy' : 'Sell';
     order = await topstepx.placeMarketOrder(futuresSymbol, topstepSide, sizing.qty);

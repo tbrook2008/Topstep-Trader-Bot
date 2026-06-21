@@ -2,6 +2,7 @@ require('dotenv').config();
 
 // 1. Mock the dependencies for tradeExecutor before requiring it
 const alpacaClient = require('./execution/alpacaClient');
+const topstepx = require('./execution/topstepxClient');
 const kelly = require('./risk/kellyCriterion');
 const validator = require('./risk/validator');
 const tradeLogger = require('./db/tradeLogger');
@@ -19,6 +20,9 @@ alpacaClient.submitOrder = async (opts) => ({
   orderId: 'mock-' + Date.now(), 
   ...opts 
 });
+topstepx.getAccountBalance = async () => ({ balance: 50000 });
+topstepx.placeMarketOrder = async (sym, side, qty) => ({ orderId: 'mock-ts-' + Date.now() });
+topstepx.flattenAllPositions = async () => true;
 
 // kelly is not mocked so it uses the real position sizing logic based on our mocked $100k account
 validator.runChecks = async () => ({ passed: true });
@@ -33,9 +37,9 @@ process.env.DRY_RUN = 'false';
 const tradeExecutor = require('./execution/tradeExecutor');
 
 // Config
-const SYMBOLS = ['AAPL', 'SPY', 'BTC/USD', 'ETH/USD', 'SOL/USD', 'QQQ', 'MSFT', 'TSLA', 'NVDA', 'DOGE/USD', 'AVAX/USD'];
+const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'USO', 'TLT'];
 const HISTORY_LIMIT = 1500;
-const DAYS_TO_FETCH = 5;
+const DAYS_TO_FETCH = 30;
 
 // We still need the original alpaca client methods to fetch historical data
 // We can use the un-mocked getClient method.

@@ -130,7 +130,8 @@ function evaluate(history, symbol) {
     // Confirm with volume
     const volumes = history.map(b => b.volume);
     const avgVol = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
-    if (volumes[last] > avgVol * 2.0) {
+    const minVol = params.minVolumeRatio || 1.2;
+    if (volumes[last] > avgVol * minVol) {
       return 'LONG';
     }
   }
@@ -138,7 +139,8 @@ function evaluate(history, symbol) {
   if (currentVelocity < prevVelocity && currentVelocity < -avgVelMag * kalmanThreshold) {
     const volumes = history.map(b => b.volume);
     const avgVol = volumes.slice(-20).reduce((a, b) => a + b, 0) / 20;
-    if (volumes[last] > avgVol * 2.0) {
+    const minVol = params.minVolumeRatio || 1.2;
+    if (volumes[last] > avgVol * minVol) {
       return 'SHORT';
     }
   }
