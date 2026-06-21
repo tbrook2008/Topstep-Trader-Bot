@@ -64,18 +64,18 @@
     "dynamicRR_MeanRev": 1
   },
   "SPY": {
-    "minVolumeRatio": 2,
-    "zScoreThreshold": 2.8,
-    "kalmanThreshold": 7,
-    "trendPeriod": 50,
+    "minVolumeRatio": 1.2,
+    "zScoreThreshold": 1.5,
+    "kalmanThreshold": 1.5,
+    "trendPeriod": 20,
     "dynamicRR_Trending": 1.5,
     "dynamicRR_MeanRev": 1.5
   },
   "QQQ": {
-    "minVolumeRatio": 2,
-    "zScoreThreshold": 2,
-    "kalmanThreshold": 3,
-    "trendPeriod": 50,
+    "minVolumeRatio": 1.2,
+    "zScoreThreshold": 1.5,
+    "kalmanThreshold": 1.5,
+    "trendPeriod": 20,
     "dynamicRR_Trending": 2,
     "dynamicRR_MeanRev": 1
   },
