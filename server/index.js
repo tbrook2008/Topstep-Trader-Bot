@@ -5,7 +5,9 @@ const { initDb, getState, setState } = require('./db/schema');
 const { getRecentDecisions, getRecentTrades, getDailyPnl } = require('./db/tradeLogger');
 const killSwitch    = require('./risk/killSwitch');
 const alpacaClient  = require('./execution/alpacaClient');
+const topstepxClient= require('./execution/topstepxClient');
 const logger        = require('./utils/logger');
+const cron          = require('node-cron');
 
 const app  = express();
 const PORT = parseInt(process.env.PORT || '3000');
@@ -183,6 +185,38 @@ app.get('*', (req, res) => {
 // ─────────────────────────────────────────────
 // Start Trading Engine
 require('./autonomous/scheduler');
+
+// ─────────────────────────────────────────────
+// Topstep Guardrails (Time-Based Rules)
+// ─────────────────────────────────────────────
+
+// EOD Flatten (Topstep requires all positions closed by 3:10 PM CT)
+// Run at 2:58 PM CT every weekday to be safe
+cron.schedule('58 14 * * 1-5', async () => {
+  logger.warn('🕒 [EOD Guardrail] 2:58 PM CT reached. Flattening all positions for Topstep compliance.');
+  try {
+    await topstepxClient.flattenAllPositions();
+    killSwitch.activate('EOD Liquidated (Topstep Compliance)');
+  } catch (err) {
+    logger.error('Failed to flatten positions EOD!', { error: err.message });
+  }
+}, { timezone: "America/Chicago" });
+
+// Reset Kill-switch every day at 5:00 PM CT (Globex Open)
+cron.schedule('0 17 * * 0-5', () => {
+  logger.info('🔄 [Reset] Globex open. Deactivating kill-switch for new trading session.');
+  killSwitch.deactivate();
+}, { timezone: "America/Chicago" });
+
+// Red Folder News Blocks (Hardcoded standard US times)
+// Block 7:28 AM - 7:32 AM CT (8:28 - 8:32 AM ET) - NFP/CPI
+cron.schedule('28 7 * * 1-5', () => killSwitch.activate('Red Folder News Block (8:30 AM ET)'), { timezone: "America/Chicago" });
+cron.schedule('32 7 * * 1-5', () => killSwitch.deactivate(), { timezone: "America/Chicago" });
+
+// Block 12:58 PM - 1:02 PM CT (1:58 - 2:02 PM ET) - FOMC
+cron.schedule('58 12 * * 1-5', () => killSwitch.activate('Red Folder News Block (2:00 PM ET)'), { timezone: "America/Chicago" });
+cron.schedule('2 13 * * 1-5', () => killSwitch.deactivate(), { timezone: "America/Chicago" });
+
 // ─────────────────────────────────────────────
 
 app.listen(PORT, () => {

@@ -99,6 +99,11 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
       passed: correlationPass,
       detail: correlationPass ? 'No high correlation with open positions' : 'Rejected due to high correlation with an open position',
     },
+    {
+      name: 'Topstep Scaling Rule (Max 4 positions)',
+      passed: (openPositions ? openPositions.length : 0) < 4,
+      detail: `Currently holding ${openPositions ? openPositions.length : 0} open positions. Prop firm limit is 5.`,
+    },
   ];
 
   // ── PDT Rule Warning (stocks under $25k) ──────────────────────────────────
