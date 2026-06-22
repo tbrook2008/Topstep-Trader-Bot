@@ -26,6 +26,7 @@ function getSymbolParams(symbol) {
 }
 
 const vwapReversion = require('../quantitative/vwapReversion');
+const ensembleStrategy = require('../quantitative/ensembleStrategy');
 const propRiskManager = require('../risk/propRiskManager');
 const { calculateATR, getDynamicATRMultiplier } = require('../quantitative/atr');
 const { analyzeVolume, classifyVolume } = require('../quantitative/volumeProfile');
@@ -42,14 +43,15 @@ async function execute({ bundle }) {
   const price  = bundle.price;
   const mode   = process.env.TRADING_MODE || 'paper';
   const history = bundle.history;
+  const history5m = bundle.history5m;
 
-  const signal = vwapReversion.evaluate(history);
+  const signal = ensembleStrategy.evaluate(history, history5m, symbol);
   if (!signal) {
-    return { executed: false, reason: 'VWAP Reversion models not met' };
+    return { executed: false, reason: 'Ensemble models not met' };
   }
   
   const direction = signal.action;
-  const strategy  = 'VWAP Mean Reversion';
+  const strategy  = signal.strategy || 'Ensemble VWAP';
   const regime    = 'mean-reverting';
   const isTrending = false;
   

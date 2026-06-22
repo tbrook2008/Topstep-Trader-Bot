@@ -78,6 +78,28 @@ async function primeHistory(symbol) {
   }
 }
 
+function convert1mTo5m(bars1m) {
+  const bars5m = [];
+  let current5m = null;
+  for (let i = 0; i < bars1m.length; i++) {
+    const b = bars1m[i];
+    if (!current5m) {
+      current5m = { open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume };
+    } else {
+      current5m.high = Math.max(current5m.high, b.high);
+      current5m.low = Math.min(current5m.low, b.low);
+      current5m.close = b.close;
+      current5m.volume += b.volume;
+    }
+    if ((i + 1) % 5 === 0) {
+      bars5m.push(current5m);
+      current5m = null;
+    }
+  }
+  if (current5m) bars5m.push(current5m);
+  return bars5m;
+}
+
 /**
  * Aggregate data and append the incoming live bar.
  */
@@ -108,7 +130,8 @@ async function aggregate(symbol, latestBar) {
     volume:    latestBar.volume,
     
     // Pass the full historical array to be used by the deterministic quantitative scripts
-    history:   barsHistory[symbol]
+    history:   barsHistory[symbol],
+    history5m: convert1mTo5m(barsHistory[symbol])
   };
 
   return bundle;

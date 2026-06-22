@@ -31,33 +31,30 @@ process.env.DRY_RUN = 'false';
 const tradeExecutor = require('./execution/tradeExecutor');
 
 const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'USO', 'TLT'];
-const HISTORY_LIMIT = 200;
-const DAYS_TO_FETCH = 5; // Test on last 5 days to include weekdays
+const HISTORY_LIMIT = 1500;
+const DAYS_TO_FETCH = 15; // Test on last 15 days to save some API time but get enough data
 
 // Grid search parameter combinations (expanded search space for hypersensitivity)
-const minVolumeRatios = [1.2, 1.5, 2.0];
-const zScoreThresholds = [1.5, 2.0, 2.5];
-const kalmanThresholds = [1.5, 3.0, 5.0];
-const trendPeriods = [20, 50];
-const dynamicRR_Trendings = [1.5, 2.0];
-const dynamicRR_MeanRevs = [1.0, 1.5];
+// Grid search parameter combinations for CTA Trend Following
+const donchianPeriods = [10, 20];
+const emaPeriods = [20, 50];
+const stopMultipliers = [1.0, 1.5];
+const targetMultipliers = [2.0, 3.0];
+const minVolumeRatios = [0.8, 1.2]; // Also search volume ratio
 
 const combinations = [];
-for (const v of minVolumeRatios) {
-  for (const z of zScoreThresholds) {
-    for (const k of kalmanThresholds) {
-      for (const t of trendPeriods) {
-        for (const rt of dynamicRR_Trendings) {
-          for (const rm of dynamicRR_MeanRevs) {
-            combinations.push({
-              minVolumeRatio: v,
-              zScoreThreshold: z,
-              kalmanThreshold: k,
-              trendPeriod: t,
-              dynamicRR_Trending: rt,
-              dynamicRR_MeanRev: rm
-            });
-          }
+for (const dp of donchianPeriods) {
+  for (const ep of emaPeriods) {
+    for (const sm of stopMultipliers) {
+      for (const tm of targetMultipliers) {
+        for (const vr of minVolumeRatios) {
+          combinations.push({
+            donchianPeriod: dp,
+            emaPeriod: ep,
+            stopMultiplier: sm,
+            targetMultiplier: tm,
+            minVolumeRatio: vr
+          });
         }
       }
     }
@@ -112,6 +109,29 @@ async function optimizeSymbol(symbol, data) {
     global.OPTIMIZE_PARAMS = params;
 
     let history = [];
+    
+    function convert1mTo5m(bars1m) {
+      const bars5m = [];
+      let current5m = null;
+      for (let i = 0; i < bars1m.length; i++) {
+        const b = bars1m[i];
+        if (!current5m) {
+          current5m = { open: b.open, high: b.high, low: b.low, close: b.close, volume: b.volume };
+        } else {
+          current5m.high = Math.max(current5m.high, b.high);
+          current5m.low = Math.min(current5m.low, b.low);
+          current5m.close = b.close;
+          current5m.volume += b.volume;
+        }
+        if ((i + 1) % 5 === 0) {
+          bars5m.push(current5m);
+          current5m = null;
+        }
+      }
+      if (current5m) bars5m.push(current5m);
+      return bars5m;
+    }
+
     let openPosition = null;
     let trades = 0;
     let wins = 0;
@@ -153,7 +173,12 @@ async function optimizeSymbol(symbol, data) {
         continue;
       }
 
-      const bundle = { symbol, price: bar.close, history: [...history] };
+      const bundle = { 
+        symbol, 
+        price: bar.close, 
+        history: [...history],
+        history5m: convert1mTo5m(history)
+      };
       const result = await tradeExecutor.execute({ bundle });
       
       if (result && result.executed) {
