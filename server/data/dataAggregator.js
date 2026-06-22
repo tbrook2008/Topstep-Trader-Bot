@@ -30,9 +30,9 @@ async function primeHistory(symbol) {
   const client = alpacaClient.getClient();
   const isCrypto = isCryptoSymbol(symbol);
   
-  // Get bars for the last 2 days to ensure we have enough data
+  // Get bars for the last 5 days to ensure we have enough data (overcoming weekends/holidays)
   const start = new Date();
-  start.setDate(start.getDate() - 2);
+  start.setDate(start.getDate() - 5);
   
   try {
     let bars = [];

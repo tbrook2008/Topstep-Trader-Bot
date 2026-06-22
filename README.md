@@ -366,5 +366,10 @@ pm2 restart all --update-env
 ```
 
 > ⚠️ Only do this after 2+ weeks of consistently profitable paper trading. Start with small capital.
-## Topstep Combine Protections
-Added  Daily Loss kill-switch and  maximum consistency cap lock. Decoupled MACD/Kalman triggers and generated 30-day dynamically optimized parameters to massively boost trade frequency and profitability.
+## Topstep Combine Protections & Architecture
+- **Dedicated Local Execution:** To comply strictly with Prop Firm rules regarding IP addresses and VPS restrictions, the `Topstep-Bot` executes solely on the local machine via PM2.
+- **REST Polling Pipeline:** Local Topstep-Bot bypasses Alpaca WebSocket connection limits by using 60-second REST polling for market quotes. This allows the Droplet `AI-Trader` to maintain its WebSocket feed uninterrupted.
+- **TopstepX Gateway Integration:** Authenticates natively via `topstepxClient.js` against the ProjectX API (`api.topstepx.com`), pulling down active 50k simulation account metrics.
+- **Strict Futures Proxies:** SPY→ES, QQQ→NQ, DIA→YM, IWM→RTY, GLD→GC, USO→CL, TLT→ZB.
+- **Trade Spreadsheets:** Live market entries execute on Topstep and log concurrently to `server/data/trades.csv` for audit-ability and performance review.
+- **Daily Kill-Switches:** Added Daily Loss kill-switch and maximum consistency cap lock. Decoupled MACD/Kalman triggers and generated 30-day dynamically optimized parameters to massively boost trade frequency and profitability.

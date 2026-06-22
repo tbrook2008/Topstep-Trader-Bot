@@ -20,45 +20,44 @@ function startStream() {
   stockStream.setMaxListeners  && stockStream.setMaxListeners(0);
   cryptoStream.setMaxListeners && cryptoStream.setMaxListeners(0);
 
-  stockStream.onConnect(() => {
-    logger.info('Connected to Alpaca Stock WebSocket');
-    const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
-    if (stocks.length > 0) stockStream.subscribeForBars(stocks);
-  });
-
-  stockStream.onStockBar(async bar => {
-    const symbol = bar.Symbol || bar.S;
-    logger.info(`Received 1-min stock bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
-    const formattedBar = {
-      open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
-    };
-    await processSymbol(symbol, formattedBar);
-  });
+  logger.info('Starting REST polling instead of WebSocket to avoid connection limit conflicts.');
   
-  cryptoStream.onConnect(() => {
-    logger.info('Connected to Alpaca Crypto WebSocket');
-    const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
-    if (cryptos.length > 0) cryptoStream.subscribeForBars(cryptos);
-  });
+  setInterval(async () => {
+    try {
+      const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
+      const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
 
-  cryptoStream.onCryptoBar(async bar => {
-    const symbol = bar.Symbol || bar.S;
-    logger.info(`Received 1-min crypto bar for ${symbol}`, { close: bar.Close || bar.ClosePrice, volume: bar.Volume });
-    const formattedBar = {
-      open: bar.Open || bar.OpenPrice, 
-      high: bar.High || bar.HighPrice, 
-      low: bar.Low || bar.LowPrice, 
-      close: bar.Close || bar.ClosePrice, 
-      volume: bar.Volume
-    };
-    await processSymbol(symbol, formattedBar);
-  });
+      if (stocks.length > 0) {
+        const bars = await client.getLatestBars(stocks);
+        for (const symbol of stocks) {
+          if (bars.has(symbol)) {
+            const b = bars.get(symbol);
+            const formattedBar = {
+              open: b.OpenPrice, high: b.HighPrice, low: b.LowPrice, close: b.ClosePrice, volume: b.Volume
+            };
+            logger.info(`Received REST 1-min stock bar for ${symbol}`, { close: formattedBar.close, volume: formattedBar.volume });
+            await processSymbol(symbol, formattedBar);
+          }
+        }
+      }
 
-  cryptoStream.onError(err => logger.error('Alpaca Crypto WS Error', { error: err.message || err }));
-  stockStream.onError(err => logger.error('Alpaca Stock WS Error', { error: err.message || err }));
-
-  stockStream.connect();
-  cryptoStream.connect();
+      if (cryptos.length > 0) {
+        const bars = await client.getLatestCryptoBars(cryptos);
+        for (const symbol of cryptos) {
+          if (bars.has(symbol)) {
+            const b = bars.get(symbol);
+            const formattedBar = {
+              open: b.Open, high: b.High, low: b.Low, close: b.Close, volume: b.Volume
+            };
+            logger.info(`Received REST 1-min crypto bar for ${symbol}`, { close: formattedBar.close, volume: formattedBar.volume });
+            await processSymbol(symbol, formattedBar);
+          }
+        }
+      }
+    } catch (err) {
+      logger.error('REST Polling Error', { error: err.message });
+    }
+  }, 60000); // Poll every 60 seconds
 }
 
 async function processSymbol(symbol, latestBar) {
@@ -70,9 +69,9 @@ async function processSymbol(symbol, latestBar) {
     const [ctHour, ctMinute] = ctTime.split(':').map(Number);
     const timeInMinutes = ctHour * 60 + ctMinute;
 
-    // 8:30 AM CT = 510 mins, 3:00 PM CT = 900 mins
-    if (timeInMinutes < 510 || timeInMinutes >= 900) {
-      return; // Silently skip if outside NY market hours
+    // Topstep no-trade zone: 3:00 PM CT (900 mins) to 5:00 PM CT (1020 mins)
+    if (timeInMinutes >= 900 && timeInMinutes < 1020) {
+      return; // Silently skip if during maintenance window
     }
 
     // Auto-check Daily PnL Limits (Profit Cap and Loss Limit)
