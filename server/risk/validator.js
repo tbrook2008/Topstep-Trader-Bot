@@ -59,6 +59,11 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
       passed: !(isCryptoSymbol(symbol) && consensus.direction === 'SHORT'),
       detail: 'Alpaca does not support short selling cryptocurrencies',
     },
+    {
+      name: 'Absolute Minimum Balance Guard ($48,000)',
+      passed: balance - positionDollars > 48000,
+      detail: `Current balance ($${balance}) minus risk ($${positionDollars}) must stay above $48,000 Topstep hard deck.`,
+    },
 
     {
       name: `Consecutive Losses < ${MAX_CONSEC_LOSS}`,

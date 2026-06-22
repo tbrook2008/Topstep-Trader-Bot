@@ -1,23 +1,17 @@
-# AI Trader Context & Memory
-This file contains the context of the AI Trader project so that cloud agents can pick up where the local agent left off.
+# AI Trader Prop Context & Memory
 
 ## Current State
-- The bot has been deployed to the remote DigitalOcean droplet.
-- PM2 is used for process management (process name: 'AI-Trader').
-- A GitHub two-way sync workflow is in place. You can use 'git clone', 'git push', 'git pull' to synchronize.
-- An hourly cron job is configured to verify PM2 status, monitor logs for errors, and calculate recent PnL from the local SQLite db.
+- The bot is actively trading on a live $50K TopstepX Combine account.
+- It operates entirely locally using PM2 (process name: `Topstep-Bot`) to comply with Topstep VPS/IP constraints.
+- We have stripped out all LLM (Gemini/Ollama) consensus code, friends-node webhooks, and legacy statistical models (Kalman/OU/Ensemble). 
 
-## Recent Fixes
-- **Pure Quantitative Pipeline:** The AI (Gemini/Ollama) consensus layer has been completely removed. The bot now runs entirely on advanced mathematical models.
-- **Regime Detection:** Replaced ADX with a Gaussian Mixture Model (GMM) approximating a Hidden Markov Model (HMM) to classify market regimes based on log-returns volatility.
-- **Momentum Trigger:** Replaced MACD and VWAP with a dynamic State-Space Kalman Filter that tracks price velocity and confirms with volume spikes.
-- **Mean-Reversion Trigger:** Replaced Bollinger Bands and RSI with an Ornstein-Uhlenbeck (OU) process calibrated via exact linear regression to buy oversold Z-score deviations.
-- Crypto Execution Fix: 'isCryptoSymbol' in 'alpacaClient.js' and 'dataAggregator.js' was updated to handle crypto symbols (e.g., BCH/USD). Alpaca does not support bracket orders for crypto; market orders must be used.
-- Universal Risk Monitor Refactor: 'riskMonitor.js' automatically 'adopts' orphaned or manually opened positions from Alpaca that aren't in the local database. It logs these into the 'trades' table to reflect on the web dashboard.
-- 'trader.sqlite' is the source of truth. If cleared, the dashboard won't show active trades until 'riskMonitor.js' adopts them.
+## Recent Architectural Shifts
+- **Strategy Transition**: We abandoned the HMM/Kalman/OU pipeline because it over-traded and blew the daily loss limit. We have shifted 100% to a **VWAP Mean Reversion** strategy (`vwapReversion.js`).
+- **Optimization Strategy**: The bot runs custom-tuned parameters for each ticker (stored in `server/data/symbolParams.json`).
+- **API Guarding**: Added rigorous checks in `tradeExecutor.js` to ensure DRY_RUN testing/backtesting never spams the Topstep live API (which previously caused 429 errors).
+- **Time Filter**: The bot executes only between 18:00 (Globex open) and 16:10 (market close), sleeping completely during the settlement window.
+- **Contract Tracking**: The bot correctly targets micro futures (`MES`, `MNQ`, `MYM`, `M2K`, `MGC`, `MCL`, `ZB`) when tracking open positions and flattening.
 
-
-## Important Constraint
-- This bot trades real money. Slip-ups cannot happen. Make sure all changes are tested, and any orphaned positions are closely tracked and exited for profit.
-
-When starting a new task, always refer to this memory file to understand the architecture and constraints.
+## Important Constraints
+- **Do not add Webhooks**: This bot must remain strictly isolated from the social/copy-trading API.
+- **Topstep Daily Loss Limit (DLL)**: Never exceed the $1000 daily loss limit.

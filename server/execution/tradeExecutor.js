@@ -27,7 +27,6 @@ function getSymbolParams(symbol) {
 }
 
 const vwapReversion = require('../quantitative/vwapReversion');
-const ensembleStrategy = require('../quantitative/ensembleStrategy');
 const propRiskManager = require('../risk/propRiskManager');
 const { calculateATR, getDynamicATRMultiplier } = require('../quantitative/atr');
 const { analyzeVolume, classifyVolume } = require('../quantitative/volumeProfile');
@@ -46,13 +45,13 @@ async function execute({ bundle }) {
   const history = bundle.history;
   const history5m = bundle.history5m;
 
-  const signal = ensembleStrategy.evaluate(history, history5m, symbol);
+  const signal = vwapReversion.evaluate(history);
   if (!signal) {
-    return { executed: false, reason: 'Ensemble models not met' };
+    return { executed: false, reason: 'VWAP Reversion conditions not met' };
   }
   
   const direction = signal.action;
-  const strategy  = signal.strategy || 'Ensemble VWAP';
+  const strategy  = 'VWAP Mean Reversion';
   const regime    = 'mean-reverting';
   const isTrending = false;
   
@@ -66,19 +65,20 @@ async function execute({ bundle }) {
     strategy
   });
 
-  // Step 2: Fetch live account data from TopstepX
-  let account;
-  try {
-    account = await topstepx.getAccountBalance();
-    if (!account) throw new Error('TopstepX returned null account balance');
-  } catch (err) {
-    logger.error('Failed to fetch TopstepX account data', { error: err.message });
-    return { executed: false, reason: 'TopstepX account fetch failed' };
+  let account = { balance: 50000, canTrade: true };
+  if (!DRY_RUN) {
+    try {
+      account = await topstepx.getAccountBalance() || account;
+      if (!account) throw new Error('TopstepX returned null account balance');
+    } catch (err) {
+      logger.error('Failed to fetch TopstepX account data', { error: err.message });
+      return { executed: false, reason: 'TopstepX account fetch failed' };
+    }
   }
 
   const liveBalance = account.balance || 50000;
 
-  if (!account.canTrade) {
+  if (!account.canTrade && !DRY_RUN) {
     logger.warn('Account trading is blocked — skipping', { symbol });
     return { executed: false, reason: 'TopstepX account trading blocked' };
   }
@@ -168,7 +168,7 @@ async function execute({ bundle }) {
   const slTicks = calculateTicks(symbol, trailPrice);
 
   try {
-    const tsResponse = await topstepx.placeMarketOrder(tsSymbol, side, sizing.qty, tpTicks, slTicks);
+    const tsResponse = await topstepx.placeMarketOrder(tsSymbol, side, sizing.qty, tpTicks, slTicks, price);
     if (!tsResponse) throw new Error('TopstepX Order Failed');
     
     order = { orderId: tsResponse.orderId || 'ts-order-' + Date.now() };
@@ -203,32 +203,7 @@ async function execute({ bundle }) {
 
   setState(`last_trade_${symbol}`, new Date().toISOString());
 
-  // Broadast webhook to Friends' Exec Node (Project 2)
-  try {
-    const http = require('http');
-    const payload = JSON.stringify({
-      symbol,
-      direction,
-      price,
-      trailPrice: parseFloat(trailPrice.toFixed(2)),
-      targetPrice: parseFloat(atrTarget.toFixed(4)),
-      isTrending,
-      positionPct: sizing ? parseFloat((sizing.positionDollars / liveBalance).toFixed(4)) : 0.05
-    });
-    const req = http.request({
-      hostname: 'localhost',
-      port: 4000,
-      path: '/api/internal/signal',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payload)
-      }
-    });
-    req.on('error', (err) => { logger.warn('Webhook error (Friends Exec Node may be offline)', err.message); });
-    req.write(payload);
-    req.end();
-  } catch (e) { }
+  // Topstep Prop Firm Bot: Webhook removed to decouple from the Friends Exec Node
 
   return {
     executed:        true,

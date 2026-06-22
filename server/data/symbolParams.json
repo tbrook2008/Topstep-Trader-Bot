@@ -1,51 +1,51 @@
 {
   "SPY": {
-    "donchianPeriod": 20,
-    "emaPeriod": 50,
-    "stopMultiplier": 1.5,
-    "targetMultiplier": 2,
-    "minVolumeRatio": 0.8
+    "sdMultiplier": 1.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
+    "stopLossMultiplier": 2,
+    "minVolumeRatio": 1.2
   },
   "QQQ": {
-    "donchianPeriod": 10,
-    "emaPeriod": 20,
-    "stopMultiplier": 1.5,
-    "targetMultiplier": 3,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 1.5,
     "minVolumeRatio": 1.2
   },
   "DIA": {
-    "donchianPeriod": 10,
-    "emaPeriod": 50,
-    "stopMultiplier": 1,
-    "targetMultiplier": 3,
+    "sdMultiplier": 1.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
+    "stopLossMultiplier": 1.5,
     "minVolumeRatio": 1.2
   },
   "IWM": {
-    "donchianPeriod": 10,
-    "emaPeriod": 20,
-    "stopMultiplier": 1,
-    "targetMultiplier": 3,
-    "minVolumeRatio": 0.8
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
+    "stopLossMultiplier": 1.5,
+    "minVolumeRatio": 1.2
   },
   "GLD": {
-    "donchianPeriod": 20,
-    "emaPeriod": 50,
-    "stopMultiplier": 1.5,
-    "targetMultiplier": 2,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 1,
     "minVolumeRatio": 1.2
   },
   "USO": {
-    "donchianPeriod": 20,
-    "emaPeriod": 20,
-    "stopMultiplier": 1,
-    "targetMultiplier": 3,
-    "minVolumeRatio": 0.8
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 2,
+    "minVolumeRatio": 1.2
   },
   "TLT": {
-    "donchianPeriod": 10,
-    "emaPeriod": 20,
-    "stopMultiplier": 1,
-    "targetMultiplier": 3,
+    "sdMultiplier": 2,
+    "rsiOversold": 35,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 2,
     "minVolumeRatio": 1.2
   }
 }

@@ -41,7 +41,7 @@ app.get('/api/status', async (req, res) => {
       totalTrades:     parseInt(getState('total_trades')       || '0'),
       totalWins:       parseInt(getState('total_wins')         || '0'),
       watchedSymbols:  (process.env.WATCHED_SYMBOLS || '').split(',').map(s => s.trim()),
-      geminiStatus:    require('./ai/geminiNode').isAvailable() ? 'online' : 'circuit-open',
+      geminiStatus:    'N/A (Topstep Quant Bot)',
       uptime:          Math.floor(process.uptime()),
     });
   } catch (err) {

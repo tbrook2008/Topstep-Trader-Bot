@@ -126,7 +126,7 @@ class TopstepXClient {
      * Place a Market Order for Futures with optional bracket orders
      * e.g., MES, MNQ
      */
-    async placeMarketOrder(symbol, side, quantity, tpTicks, slTicks) {
+    async placeMarketOrder(symbol, side, quantity, tpTicks, slTicks, entryPrice = 'Market') {
         if (!this.jwtToken || !this.accountId) await this.authenticate();
 
         try {
@@ -167,7 +167,7 @@ class TopstepXClient {
                     const path = require('path');
                     const csvPath = path.join(__dirname, '..', 'data', 'trades.csv');
                     const timestamp = new Date().toISOString();
-                    const csvLine = `\n${timestamp},${symbol},${side},${quantity},${orderId}`;
+                    const csvLine = `\n${timestamp},${symbol},${side},${quantity},${orderId},${entryPrice}`;
                     fs.appendFileSync(csvPath, csvLine);
                     console.log(`[TopstepX] Trade successfully logged to spreadsheet.`);
                 } catch (err) {
@@ -190,7 +190,7 @@ class TopstepXClient {
      * Close all open positions (Flatten)
      * Used for the 3:00 PM auto-flatten rule.
      */
-    async flattenAllPositions(symbols = ['NQ', 'ES', 'CL', 'GC']) {
+    async flattenAllPositions(symbols = ['MNQ', 'MES', 'MYM', 'M2K', 'MGC', 'MCL', 'ZB']) {
         if (!this.jwtToken || !this.accountId) await this.authenticate();
 
         try {

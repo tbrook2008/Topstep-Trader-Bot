@@ -82,12 +82,14 @@ async function processSymbol(symbol, latestBar) {
   try {
     if (killSwitch.isActive()) return;
 
-    // Session time filter (EST)
+    // Session time filter (EST) - Futures open at 18:00 (6:00 PM ET) and close at 16:10 (4:10 PM ET)
     const now = new Date();
     const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
     const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
-    if (!((timeVal >= 945 && timeVal <= 1130) || (timeVal >= 1330 && timeVal <= 1530))) {
-      return;
+    
+    // Allow: 18:00 to 23:59 AND 00:00 to 16:00
+    if (timeVal >= 1600 && timeVal < 1800) {
+      return; // Settlement window halt
     }
 
     // 1. Aggregate market data
