@@ -1,42 +1,51 @@
 {
+  "SPY": {
+    "minVolumeRatio": 1,
+    "sdMultiplier": 1.5,
+    "rsiOversold": 35,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 1
+  },
   "QQQ": {
+    "minVolumeRatio": 1,
+    "sdMultiplier": 2,
+    "rsiOversold": 35,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 1
+  },
+  "DIA": {
     "minVolumeRatio": 1.2,
-    "zScoreThreshold": 1.5,
-    "kalmanThreshold": 1.5,
-    "trendPeriod": 20,
-    "dynamicRR_Trending": 1.5,
-    "dynamicRR_MeanRev": 1
+    "sdMultiplier": 1.5,
+    "rsiOversold": 40,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 1
   },
   "IWM": {
     "minVolumeRatio": 1.2,
-    "zScoreThreshold": 1.5,
-    "kalmanThreshold": 1.5,
-    "trendPeriod": 20,
-    "dynamicRR_Trending": 1.5,
-    "dynamicRR_MeanRev": 1
+    "sdMultiplier": 1.5,
+    "rsiOversold": 35,
+    "rsiOverbought": 65,
+    "stopLossMultiplier": 1.5
   },
   "GLD": {
-    "minVolumeRatio": 1.2,
-    "zScoreThreshold": 1.5,
-    "kalmanThreshold": 1.5,
-    "trendPeriod": 20,
-    "dynamicRR_Trending": 1.5,
-    "dynamicRR_MeanRev": 1
+    "minVolumeRatio": 1,
+    "sdMultiplier": 2,
+    "rsiOversold": 35,
+    "rsiOverbought": 60,
+    "stopLossMultiplier": 1.5
   },
   "USO": {
     "minVolumeRatio": 1.2,
-    "zScoreThreshold": 1.5,
-    "kalmanThreshold": 1.5,
-    "trendPeriod": 20,
-    "dynamicRR_Trending": 1.5,
-    "dynamicRR_MeanRev": 1
+    "sdMultiplier": 1.5,
+    "rsiOversold": 40,
+    "rsiOverbought": 65,
+    "stopLossMultiplier": 1.5
   },
   "TLT": {
-    "minVolumeRatio": 1.2,
-    "zScoreThreshold": 1.5,
-    "kalmanThreshold": 3,
-    "trendPeriod": 20,
-    "dynamicRR_Trending": 1.5,
-    "dynamicRR_MeanRev": 1
+    "minVolumeRatio": 1,
+    "sdMultiplier": 1.5,
+    "rsiOversold": 35,
+    "rsiOverbought": 65,
+    "stopLossMultiplier": 1
   }
 }

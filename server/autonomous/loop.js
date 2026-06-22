@@ -2,12 +2,12 @@ require('dotenv').config();
 const { aggregate, isCryptoSymbol } = require('../data/dataAggregator');
 const { execute }      = require('../execution/tradeExecutor');
 const alpacaClient     = require('../execution/alpacaClient');
-const { logDecision, getDailyPnl }  = require('../db/tradeLogger');
+const { logDecision }  = require('../db/tradeLogger');
 const killSwitch       = require('../risk/killSwitch');
 const logger           = require('../utils/logger');
 const { checkCorrelation } = require('../risk/correlation');
 
-const SYMBOLS = (process.env.WATCHED_SYMBOLS || 'BTC/USD,ETH/USD,AAPL').split(',').map(s => s.trim());
+const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'TLT'];
 
 const tickBuffer = {};
 
@@ -20,64 +20,58 @@ function startStream() {
   stockStream.setMaxListeners  && stockStream.setMaxListeners(0);
   cryptoStream.setMaxListeners && cryptoStream.setMaxListeners(0);
 
-  logger.info('Starting REST polling instead of WebSocket to avoid connection limit conflicts.');
+  stockStream.onConnect(() => {
+    logger.info('Connected to Alpaca Stock WebSocket');
+    const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
+    if (stocks.length > 0) stockStream.subscribeForBars(stocks);
+  });
+
+  stockStream.onStockBar(async bar => {
+    const symbol = bar.Symbol || bar.S;
+    logger.info(`Received 1-min stock bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
+    const formattedBar = {
+      open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
+    };
+    await processSymbol(symbol, formattedBar);
+  });
   
-  setInterval(async () => {
-    try {
-      const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
-      const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
+  cryptoStream.onConnect(() => {
+    logger.info('Connected to Alpaca Crypto WebSocket');
+    const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
+    if (cryptos.length > 0) cryptoStream.subscribeForBars(cryptos);
+  });
 
-      if (stocks.length > 0) {
-        const bars = await client.getLatestBars(stocks);
-        for (const symbol of stocks) {
-          if (bars.has(symbol)) {
-            const b = bars.get(symbol);
-            const formattedBar = {
-              open: b.OpenPrice, high: b.HighPrice, low: b.LowPrice, close: b.ClosePrice, volume: b.Volume
-            };
-            logger.info(`Received REST 1-min stock bar for ${symbol}`, { close: formattedBar.close, volume: formattedBar.volume });
-            await processSymbol(symbol, formattedBar);
-          }
-        }
-      }
+  cryptoStream.onCryptoBar(async bar => {
+    const symbol = bar.Symbol || bar.S;
+    logger.info(`Received 1-min crypto bar for ${symbol}`, { close: bar.Close || bar.ClosePrice, volume: bar.Volume });
+    const formattedBar = {
+      open: bar.Open || bar.OpenPrice, 
+      high: bar.High || bar.HighPrice, 
+      low: bar.Low || bar.LowPrice, 
+      close: bar.Close || bar.ClosePrice, 
+      volume: bar.Volume
+    };
+    await processSymbol(symbol, formattedBar);
+  });
 
-      if (cryptos.length > 0) {
-        const bars = await client.getLatestCryptoBars(cryptos);
-        for (const symbol of cryptos) {
-          if (bars.has(symbol)) {
-            const b = bars.get(symbol);
-            const formattedBar = {
-              open: b.Open, high: b.High, low: b.Low, close: b.Close, volume: b.Volume
-            };
-            logger.info(`Received REST 1-min crypto bar for ${symbol}`, { close: formattedBar.close, volume: formattedBar.volume });
-            await processSymbol(symbol, formattedBar);
-          }
-        }
-      }
-    } catch (err) {
-      logger.error('REST Polling Error', { error: err.message });
-    }
-  }, 60000); // Poll every 60 seconds
+  cryptoStream.onError(err => logger.error('Alpaca Crypto WS Error', { error: err.message || err }));
+  stockStream.onError(err => logger.error('Alpaca Stock WS Error', { error: err.message || err }));
+
+  stockStream.connect();
+  cryptoStream.connect();
 }
 
 async function processSymbol(symbol, latestBar) {
   try {
-    // Topstep Time Constraint: NY Volatility Window only
-    const now = new Date();
-    const options = { timeZone: 'America/Chicago', hour12: false, hour: 'numeric', minute: 'numeric' };
-    const ctTime = new Intl.DateTimeFormat('en-US', options).format(now);
-    const [ctHour, ctMinute] = ctTime.split(':').map(Number);
-    const timeInMinutes = ctHour * 60 + ctMinute;
-
-    // Topstep no-trade zone: 3:00 PM CT (900 mins) to 5:00 PM CT (1020 mins)
-    if (timeInMinutes >= 900 && timeInMinutes < 1020) {
-      return; // Silently skip if during maintenance window
-    }
-
-    // Auto-check Daily PnL Limits (Profit Cap and Loss Limit)
-    killSwitch.autoCheckDailyLimits(getDailyPnl());
-
     if (killSwitch.isActive()) return;
+
+    // Session time filter (EST)
+    const now = new Date();
+    const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+    const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
+    if (!((timeVal >= 945 && timeVal <= 1130) || (timeVal >= 1330 && timeVal <= 1530))) {
+      return;
+    }
 
     // 1. Aggregate market data
     const bundle = await aggregate(symbol, latestBar);

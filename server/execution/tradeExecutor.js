@@ -4,8 +4,6 @@
  */
 require('dotenv').config();
 const alpaca        = require('./alpacaClient');
-const topstepx      = require('./topstepxClient');
-const kelly         = require('../risk/kellyCriterion');
 const validator     = require('../risk/validator');
 const { logTrade }  = require('../db/tradeLogger');
 const memory        = require('../db/strategyMemory');
@@ -27,15 +25,10 @@ function getSymbolParams(symbol) {
   return symbolParamsCache[symbol] || {};
 }
 
-const macd = require('../quantitative/macd');
-const bollingerRsi = require('../quantitative/bollingerRsi');
-const kalman = require('../quantitative/kalman');
-const ouModel = require('../quantitative/ouModel');
+const vwapReversion = require('../quantitative/vwapReversion');
+const propRiskManager = require('../risk/propRiskManager');
 const { calculateATR, getDynamicATRMultiplier } = require('../quantitative/atr');
 const { analyzeVolume, classifyVolume } = require('../quantitative/volumeProfile');
-const hmm = require('../quantitative/hmm');
-const hurst = require('../quantitative/hurst');
-const vwap = require('../quantitative/vwap');
 
 const DRY_RUN            = process.env.DRY_RUN === 'true';
 const ATR_MULTIPLIER     = parseFloat(process.env.ATR_MULTIPLIER        || '3.5');
@@ -50,56 +43,18 @@ async function execute({ bundle }) {
   const mode   = process.env.TRADING_MODE || 'paper';
   const history = bundle.history;
 
-  // Step 1: Advanced Regime Detection (Hurst Exponent)
-  const H = hurst.calculateHurst(history);
-  const regimeDetection = hurst.classifyRegime(history);
-  const isTrending = regimeDetection === 'trending';
+  const signal = vwapReversion.evaluate(history);
+  if (!signal) {
+    return { executed: false, reason: 'VWAP Reversion models not met' };
+  }
   
-  // Step 2: Synthesize Signals (DECOUPLED TRIGGERS FOR PROFITABILITY)
-  let direction = 'NO_TRADE';
-  let strategy  = 'None';
-  let regime    = 'none'; // 'trending' or 'mean-reverting'
-
-  const macdDir = macd.evaluate(history);
-  const kalmanDir = kalman.evaluate(history, symbol);
-  const ouDir = ouModel.evaluate(history, symbol);
-  const bbRsiDir = bollingerRsi.evaluate(history);
-
-  // Require MACD + High Volume + Kalman
+  const direction = signal.action;
+  const strategy  = 'VWAP Mean Reversion';
+  const regime    = 'mean-reverting';
+  const isTrending = false;
+  
   const volClass = classifyVolume(history).toUpperCase();
 
-  if (kalmanDir !== 'NO_TRADE' && macdDir === kalmanDir && (volClass === 'HIGH' || volClass === 'ABOVE_AVG')) {
-    direction = kalmanDir;
-    regime = 'trending';
-    strategy = 'Kalman+MACD';
-  }
-
-  // Require Bollinger Bands extreme + OU Model
-  if (direction === 'NO_TRADE') {
-    if (ouDir !== 'NO_TRADE' && bbRsiDir === ouDir) {
-      direction = ouDir;
-      regime = 'mean-reverting';
-      strategy = 'OU+Bollinger';
-    }
-  }
-
-  if (direction === 'NO_TRADE') {
-    return { executed: false, reason: `Strict confirmation models not met for ${regimeDetection} regime` };
-  }
-
-  if (isTrending && history && history.length > 0) {
-    const params = getSymbolParams(symbol);
-    const trendPeriod = params.trendPeriod || 50;
-    const period = Math.min(trendPeriod, history.length);
-    const recent = history.slice(-period);
-    const sma = recent.reduce((sum, b) => sum + b.close, 0) / period;
-    if (direction === 'LONG' && price < sma) {
-      return { executed: false, reason: 'Macro trend alignment failed (price below SMA)' };
-    }
-    if (direction === 'SHORT' && price > sma) {
-      return { executed: false, reason: 'Macro trend alignment failed (price above SMA)' };
-    }
-  }
 
   logger.info('Trade executor started', {
     symbol,
@@ -127,13 +82,19 @@ async function execute({ bundle }) {
     return { executed: false, reason: 'Alpaca account trading blocked' };
   }
 
-  // Step 3: Kelly sizing (no consensus score, default 80 confidence)
-  const sizing = kelly.getPositionSize(symbol, price, liveBalance, 80, account.buyingPower);
-  
-  // Alpaca does not support fractional shorting. We must floor the quantity.
-  if (direction === 'SHORT') {
-    sizing.qty = Math.floor(sizing.qty);
+  // Step 3: Prop Firm sizing
+  let qty = 0;
+  try {
+    qty = propRiskManager.calculatePositionSize(symbol, price, signal.stopLoss);
+  } catch (err) {
+    logger.warn('Failed to calculate position size', { symbol, error: err.message });
+    return { executed: false, reason: 'Invalid position sizing' };
   }
+  
+  const sizing = {
+    qty: qty,
+    positionDollars: qty * price
+  };
 
   if (sizing.qty === 0) {
     logger.warn('Insufficient buying power for trade', { symbol, buyingPower: account.buyingPower });
@@ -155,19 +116,10 @@ async function execute({ bundle }) {
     return { executed: false, reason: `Validator: ${validation.failed.join(', ')}` };
   }
 
-  // Step 5: Dynamic ATR Risk Rails
-  const atrValue = calculateATR(bundle.history, 14);
-  if (!atrValue) {
-    logger.warn('Insufficient data to calculate ATR — skipping', { symbol });
-    return { executed: false, reason: 'Insufficient ATR data' };
-  }
-
-  const dynamicMultiplier = getDynamicATRMultiplier(bundle.history, ATR_MULTIPLIER);
-  const trailPrice  = atrValue * dynamicMultiplier;
-  const params = getSymbolParams(symbol);
-  const dynamicRR = isTrending ? (params.dynamicRR_Trending || 2.0) : (params.dynamicRR_MeanRev || 1.0);
-  const targetDist  = atrValue * dynamicMultiplier * dynamicRR;
+  // Step 5: Stops & Targets mapping
   const side = direction === 'LONG' ? 'buy' : 'sell';
+  const targetDist = Math.abs(price - signal.target);
+  const trailPrice = Math.abs(price - signal.stopLoss);
 
   // Step 5b: Volume Profile check
   const volAnalysis = analyzeVolume(bundle.history, direction, symbol);
@@ -179,8 +131,8 @@ async function execute({ bundle }) {
 
   // Step 6: Calculate Stops & Targets
 
-  const atrStop   = direction === 'LONG' ? price - trailPrice : price + trailPrice;
-  const atrTarget = direction === 'LONG' ? price + targetDist  : price - targetDist;
+  const atrStop   = signal.stopLoss;
+  const atrTarget = signal.target;
 
   if (DRY_RUN) {
     logger.info('🔍 DRY RUN — no order submitted', {
@@ -189,26 +141,19 @@ async function execute({ bundle }) {
     return { executed: false, dryRun: true, sizing, validation, reason: 'Dry run mode' };
   }
 
-  // Step 7: Execute via TopstepX
+  // Step 7: Execute via Alpaca
   let order;
   try {
-    // Map stock tickers from Alpaca to CME Futures symbols for Topstep
-    let futuresSymbol = symbol;
-    if (symbol === 'QQQ') futuresSymbol = 'NQ';
-    else if (symbol === 'SPY') futuresSymbol = 'ES';
-    else if (symbol === 'DIA') futuresSymbol = 'YM';
-    else if (symbol === 'IWM') futuresSymbol = 'RTY';
-    else if (symbol === 'GLD') futuresSymbol = 'GC';
-    else if (symbol === 'USO') futuresSymbol = 'CL';
-    else if (symbol === 'TLT') futuresSymbol = 'ZB';
-
-    const topstepSide = direction === 'LONG' ? 'Buy' : 'Sell';
-    order = await topstepx.placeMarketOrder(futuresSymbol, topstepSide, sizing.qty);
-    logger.info(`✅ Market order submitted to TopstepX: ${futuresSymbol} | OrderID: ${order.orderId} | Qty: ${sizing.qty}`);
+    order = await alpaca.submitOrder({
+      symbol,
+      qty:        sizing.qty,
+      side,
+    });
+    logger.info(`✅ Market order submitted: ${symbol} | OrderID: ${order.orderId} | Qty: ${sizing.qty}`);
   } catch (err) {
     const errorDetails = err.response ? err.response.data : err.message;
-    logger.error('❌ Order submission failed on TopstepX', { symbol, error: err.message, details: errorDetails });
-    return { executed: false, reason: `TopstepX Error: ${err.message}` };
+    logger.error('❌ Order submission failed', { symbol, error: err.message, details: errorDetails });
+    return { executed: false, reason: `Alpaca Error: ${err.message}` };
   }
 
   // Step 8: Log trade — store ATR-derived stop/target so riskMonitor can pick them up
@@ -273,6 +218,7 @@ async function execute({ bundle }) {
     trailPrice:      parseFloat(trailPrice.toFixed(2)),
     targetDist:      parseFloat(targetDist.toFixed(2)),
     targetPrice:     parseFloat(atrTarget.toFixed(4)),
+    stopLossPrice:   parseFloat(atrStop.toFixed(4)),
     positionDollars: sizing.positionDollars,
   };
 }
