@@ -108,7 +108,7 @@ function calculateATR(candles, period = 14) {
 /**
  * Calculate Daily Anchored VWAP and SD Bands
  */
-function calculateVWAP(candles) {
+function calculateVWAP(candles, symbol = 'SPY') {
     if (candles.length === 0) return null;
 
     // Anchor VWAP to the start of the current day for the last candle.
@@ -117,9 +117,17 @@ function calculateVWAP(candles) {
     if (typeof lastTime === 'string') lastTime = new Date(lastTime).getTime();
     else if (typeof lastTime === 'number' && lastTime < 10000000000) lastTime *= 1000;
     
-    let lastDate = new Date(lastTime);
-    // Start of the day in local time or UTC (using local time logic here)
-    let startOfDay = new Date(lastDate.getFullYear(), lastDate.getMonth(), lastDate.getDate()).getTime();
+    const getNYHour = (timeMs) => {
+        const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hour: 'numeric', hour12: false }).formatToParts(new Date(timeMs));
+        const hourPart = parts.find(p => p.type === 'hour');
+        return parseInt(hourPart.value, 10);
+    };
+    let ts = lastTime;
+    ts -= (ts % 3600000);
+    while (getNYHour(ts) !== 17) {
+        ts -= 3600000;
+    }
+    let startOfDay = ts;
 
     let cumulativePV = 0;
     let cumulativeVolume = 0;
@@ -152,7 +160,7 @@ function calculateVWAP(candles) {
     let variance = cumulativeVariance / cumulativeVolume;
     let sd = Math.sqrt(variance);
 
-    const sdMultiplier = getSymbolParams(candles[0].symbol || 'SPY').sdMultiplier || 2.0;
+    const sdMultiplier = getSymbolParams(symbol).sdMultiplier || 2.0;
 
     return {
         vwap: vwap,
@@ -167,7 +175,7 @@ function calculateVWAP(candles) {
  * @param {Array} history - Array of 1m candle objects {open, high, low, close, volume, timestamp}
  * @returns {Object|null} Signal object or null
  */
-function evaluate(history) {
+function evaluate(history, symbol = 'SPY') {
     // Need at least enough history for 20-period volume SMA and 14-period RSI/ATR
     if (!history || history.length < 21) {
         return null;
@@ -175,7 +183,7 @@ function evaluate(history) {
 
     const currentCandle = history[history.length - 1];
 
-    const vwapData = calculateVWAP(history);
+    const vwapData = calculateVWAP(history, symbol);
     if (!vwapData) return null;
 
     const rsi = calculateRSI(history, 14);
@@ -187,7 +195,7 @@ function evaluate(history) {
     const atr = calculateATR(history, 14);
     if (atr === null) return null;
 
-    const params = getSymbolParams(history[0].symbol || 'SPY');
+    const params = getSymbolParams(symbol);
     const rsiOversold = params.rsiOversold || 35;
     const rsiOverbought = params.rsiOverbought || 65;
     const volumeReq = params.minVolumeRatio || 1.2;
@@ -199,7 +207,8 @@ function evaluate(history) {
     // LONG Signal
     // Price is below the lower band
     const extendedBelow = currentCandle.close <= lowerBand;
-    if (extendedBelow && rsi <= rsiOversold && isHighVolume) {
+    const isGreen = currentCandle.close > currentCandle.open;
+    if (extendedBelow && rsi <= rsiOversold && isHighVolume && isGreen) {
         return {
             action: 'LONG',
             entry: currentCandle.close,
@@ -212,7 +221,8 @@ function evaluate(history) {
     // SHORT Signal
     // Price is above the upper band
     const extendedAbove = currentCandle.close >= upperBand;
-    if (extendedAbove && rsi >= rsiOverbought && isHighVolume) {
+    const isRed = currentCandle.close < currentCandle.open;
+    if (extendedAbove && rsi >= rsiOverbought && isHighVolume && isRed) {
         return {
             action: 'SHORT',
             entry: currentCandle.close,

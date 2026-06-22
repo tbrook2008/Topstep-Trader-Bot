@@ -31,6 +31,8 @@ function autoCheckDailyLimits(dailyPnl) {
 
   if (dailyPnl <= -maxLossUsd && !isActive()) {
     activate(`Auto: Daily loss limit hit ($${dailyPnl.toFixed(2)} / -$${maxLossUsd.toFixed(2)})`);
+    const topstepx = require('../execution/topstepxClient');
+    topstepx.flattenAllPositions().catch(err => logger.error('Failed to flatten on daily loss limit', { error: err.message }));
     return true;
   }
   

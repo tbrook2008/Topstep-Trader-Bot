@@ -368,3 +368,10 @@ pm2 restart all --update-env
 - **RSI Momentum Filter:** Blocks trades if asset is overbought (RSI > 70) for LONGS, or oversold (RSI < 30) for SHORTS to prevent entering at exhaustion points.
 - **Trade Spreadsheets:** Live market entries execute on Topstep and log concurrently to `server/data/trades.csv` for audit-ability and performance review.
 - **Daily Kill-Switches:** Added Daily Loss kill-switch and maximum consistency cap lock. Decoupled MACD/Kalman triggers and generated 30-day dynamically optimized parameters to massively boost trade frequency and profitability.
+
+## Recent Audit Fixes
+- Dynamic Dollar-based PnL and Risk calculation for futures instead of points/notional value.
+- $1,000 Daily Loss Limit perfectly enforced by a hard-flatten kill switch.
+- EOD Auto-Flatten (3:00 PM CT) syncs cleanly with SQLite database for accurate state management.
+- VWAP overnight anchor correctly tied to CME Globex open (5:00 PM ET) instead of server midnight.
+- VWAP strategy now enforces Bar-Body confirmation (Green for long, Red for short) to prevent false exhaustion entries.

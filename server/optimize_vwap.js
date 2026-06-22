@@ -4,41 +4,56 @@ const vwapReversion = require('./quantitative/vwapReversion');
 const fs = require('fs');
 const path = require('path');
 
-const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'USO', 'TLT'];
-const DAYS_TO_FETCH = 5;
+const SYMBOLS = ['MNQ', 'MES', 'MCL', 'MGC'];
+const LIMIT = 5000;
 
 const sdMultipliers = [1.5, 2.0, 2.5];
 const rsiOversoldThresholds = [30, 35, 40];
 const rsiOverboughtThresholds = [60, 65, 70];
 const stopLossMultipliers = [1.0, 1.5, 2.0];
 
-async function fetchHistoricalData(symbol, days) {
-  const client = alpacaClient.getClient();
-  const start = new Date();
-  start.setDate(start.getDate() - days);
+const topstepClient = require('./execution/topstepxClient');
+const axios = require('axios');
+
+async function fetchHistoricalData(symbol) {
+  await topstepClient.authenticate();
+  const contractId = await topstepClient.getContractId(symbol);
+  if (!contractId) return [];
   
-  let bars = [];
+  const now = new Date();
+  const past = new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000); // 10 days ago
+  
+  const payload = {
+    contractId: contractId,
+    live: false,
+    startTime: past.toISOString(),
+    endTime: now.toISOString(),
+    unit: 2, // Minute
+    unitNumber: 1,
+    limit: LIMIT
+  };
+  
   try {
-    const iter = client.getBarsV2(symbol, {
-      timeframe: '1Min',
-      start: start.toISOString(),
+    const response = await axios.post(`${topstepClient.baseUrl}/History/retrieveBars`, payload, {
+      headers: topstepClient._getAuthHeaders()
     });
-    for await (const b of iter) {
-      bars.push({
-        open: b.OpenPrice,
-        high: b.HighPrice,
-        low: b.LowPrice,
-        close: b.ClosePrice,
-        volume: b.Volume,
-        timestamp: b.Timestamp,
+    
+    if (response.data && response.data.success && response.data.bars) {
+      // Reverse so oldest is first
+      return response.data.bars.reverse().map(b => ({
+        open: b.o,
+        high: b.h,
+        low: b.l,
+        close: b.c,
+        volume: b.v,
+        timestamp: b.t,
         symbol: symbol
-      });
+      }));
     }
-    return bars;
   } catch (err) {
     console.error(`Error fetching data for ${symbol}:`, err.message);
-    return [];
   }
+  return [];
 }
 
 async function runOptimization() {
@@ -46,7 +61,7 @@ async function runOptimization() {
 
   for (const symbol of SYMBOLS) {
     console.log(`Fetching data for ${symbol}...`);
-    const data = await fetchHistoricalData(symbol, DAYS_TO_FETCH);
+    const data = await fetchHistoricalData(symbol);
     if (data.length < 500) {
       console.log(`Not enough data for ${symbol}. Skipping.`);
       continue;

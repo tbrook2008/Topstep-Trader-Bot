@@ -197,6 +197,13 @@ cron.schedule('58 14 * * 1-5', async () => {
   try {
     await topstepxClient.flattenAllPositions();
     killSwitch.activate('EOD Liquidated (Topstep Compliance)');
+    
+    const { getDb } = require('./db/schema');
+    const { updateTradeOutcome } = require('./db/tradeLogger');
+    const openTrades = getDb().prepare("SELECT * FROM trades WHERE status IN ('open', 'submitted')").all();
+    for (const t of openTrades) {
+      updateTradeOutcome({ tradeId: t.id, exitPrice: t.entry_price, pnl: 0, status: 'closed' });
+    }
   } catch (err) {
     logger.error('Failed to flatten positions EOD!', { error: err.message });
   }

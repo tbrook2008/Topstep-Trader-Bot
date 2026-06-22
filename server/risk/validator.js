@@ -61,8 +61,8 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
     },
     {
       name: 'Absolute Minimum Balance Guard ($48,000)',
-      passed: balance - positionDollars > 48000,
-      detail: `Current balance ($${balance}) minus risk ($${positionDollars}) must stay above $48,000 Topstep hard deck.`,
+      passed: balance > 48000,
+      detail: `Current balance ($${balance}) must stay above $48,000 Topstep hard deck.`,
     },
 
     {

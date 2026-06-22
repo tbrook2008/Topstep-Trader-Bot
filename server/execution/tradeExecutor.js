@@ -8,7 +8,7 @@ const topstepx      = require('./topstepxClient');
 const validator     = require('../risk/validator');
 const { logTrade }  = require('../db/tradeLogger');
 const memory        = require('../db/strategyMemory');
-const { setState }  = require('../db/schema');
+const { setState, getDb }  = require('../db/schema');
 const logger        = require('../utils/logger');
 const fs = require('fs');
 const path = require('path');
@@ -45,7 +45,7 @@ async function execute({ bundle }) {
   const history = bundle.history;
   const history5m = bundle.history5m;
 
-  const signal = vwapReversion.evaluate(history);
+  const signal = vwapReversion.evaluate(history, symbol);
   if (!signal) {
     return { executed: false, reason: 'VWAP Reversion conditions not met' };
   }
@@ -76,7 +76,7 @@ async function execute({ bundle }) {
     }
   }
 
-  const liveBalance = account.balance || 50000;
+  const liveBalance = account.currentBalance || account.accountBalance || account.balance || 50000;
 
   if (!account.canTrade && !DRY_RUN) {
     logger.warn('Account trading is blocked — skipping', { symbol });
@@ -94,7 +94,7 @@ async function execute({ bundle }) {
   
   const sizing = {
     qty: qty,
-    positionDollars: qty * price
+    positionDollars: propRiskManager.RISK_PER_TRADE || 200
   };
 
   if (sizing.qty === 0) {
@@ -102,13 +102,21 @@ async function execute({ bundle }) {
     return { executed: false, reason: 'Quantity evaluated to 0' };
   }
   
+  let openTrades = [];
+  try {
+    const db = getDb();
+    openTrades = db.prepare("SELECT * FROM trades WHERE status = 'open'").all();
+  } catch (err) {
+    logger.warn('Failed to fetch open trades from DB', { error: err.message });
+  }
+
   // Step 4: Validation (Skip Alpaca validation for now, or adapt it)
   const validation = await validator.runChecks({
     consensus: { approved: true, direction, regime }, // Mock consensus for validator backward compatibility
     symbol,
     positionDollars: sizing.positionDollars,
     alpacaAccount:   { portfolioValue: liveBalance, buyingPower: liveBalance, cash: liveBalance, equity: liveBalance, tradingBlocked: false },
-    openPositions:   [], // Topstep API doesn't easily return these, trust DB or auto-flatten
+    openPositions:   openTrades, // Trust DB for open positions
     liveBalance,
   });
 
@@ -144,24 +152,24 @@ async function execute({ bundle }) {
 
   // Step 7: Execute via TopstepX
   let order;
-  const SYMBOL_MAP = {
-    'SPY': 'MES', 'QQQ': 'MNQ', 'DIA': 'MYM', 'IWM': 'M2K', 'GLD': 'MGC', 'USO': 'MCL', 'TLT': 'ZB'
-  };
-  const tsSymbol = SYMBOL_MAP[symbol] || symbol;
+  const tsSymbol = symbol;
 
-  function calculateTicks(sym, etfDistance) {
-    let futuresPoints = 0;
+  function calculateTicks(sym, pointDistance) {
     let tickSize = 1;
     switch (sym) {
-      case 'SPY': futuresPoints = etfDistance * 10; tickSize = 0.25; break; // MES
-      case 'QQQ': futuresPoints = etfDistance * 40; tickSize = 0.25; break; // MNQ
-      case 'DIA': futuresPoints = etfDistance * 100; tickSize = 1.00; break; // MYM
-      case 'IWM': futuresPoints = etfDistance * 10; tickSize = 0.10; break; // M2K
-      case 'GLD': futuresPoints = etfDistance * 10; tickSize = 0.10; break; // MGC
-      case 'USO': futuresPoints = etfDistance * 10; tickSize = 0.01; break; // MCL
-      default: futuresPoints = etfDistance * 10; tickSize = 0.25; break;
+      case 'MES': tickSize = 0.25; break;
+      case 'MNQ': tickSize = 0.25; break;
+      case 'MYM': tickSize = 1.00; break;
+      case 'M2K': tickSize = 0.10; break;
+      case 'MGC': tickSize = 0.10; break;
+      case 'MCL': tickSize = 0.01; break;
+      case 'ES': tickSize = 0.25; break;
+      case 'NQ': tickSize = 0.25; break;
+      case 'CL': tickSize = 0.01; break;
+      case 'GC': tickSize = 0.10; break;
+      default: tickSize = 0.25; break;
     }
-    return Math.round(futuresPoints / tickSize);
+    return Math.round(pointDistance / tickSize);
   }
 
   const tpTicks = calculateTicks(symbol, targetDist);

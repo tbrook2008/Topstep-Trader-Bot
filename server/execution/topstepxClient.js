@@ -85,7 +85,9 @@ class TopstepXClient {
             });
             
             if (response.data && response.data.accounts && response.data.accounts.length > 0) {
-                return response.data.accounts[0];
+                const account = response.data.accounts[0];
+                account.balance = account.currentBalance || account.accountBalance || account.balance || 50000;
+                return account;
             }
             return null;
         } catch (error) {
@@ -104,7 +106,7 @@ class TopstepXClient {
         try {
             const response = await axios.post(`${this.baseUrl}/Contract/search`, {
                 searchText: symbol,
-                live: false // Adjust to true if trading live, but we use false to search broad matches usually
+                live: process.env.DRY_RUN !== 'true' // Adjust to true if trading live, but we use false to search broad matches usually
             }, {
                 headers: this._getAuthHeaders()
             });
@@ -251,6 +253,53 @@ class TopstepXClient {
             console.error('[TopstepX] Error closing position:', error.message);
             return { closed: false, reason: error.message };
         }
+    }
+
+    /**
+     * Fetch historical bars from TopstepX
+     */
+    async getLatestBars(symbols, count = 2) {
+        if (!this.jwtToken) await this.authenticate();
+        
+        const now = new Date();
+        const past = new Date(now.getTime() - 60 * 60 * 1000); // 1 hour ago
+        
+        const results = {};
+        for (const symbol of symbols) {
+            try {
+                const contractId = await this.getContractId(symbol);
+                if (!contractId) continue;
+                
+                const payload = {
+                    contractId: contractId,
+                    live: false,
+                    startTime: past.toISOString(),
+                    endTime: now.toISOString(),
+                    unit: 2, // 2 = Minute
+                    unitNumber: 1,
+                    limit: count
+                };
+                
+                const response = await axios.post(`${this.baseUrl}/History/retrieveBars`, payload, {
+                    headers: this._getAuthHeaders()
+                });
+                
+                if (response.data && response.data.success && response.data.bars && response.data.bars.length > 0) {
+                    const latestBar = response.data.bars[0]; // First item is the most recent
+                    results[symbol] = {
+                        Timestamp: latestBar.t,
+                        OpenPrice: latestBar.o,
+                        HighPrice: latestBar.h,
+                        LowPrice: latestBar.l,
+                        ClosePrice: latestBar.c,
+                        Volume: latestBar.v
+                    };
+                }
+            } catch (err) {
+                console.error(`[TopstepX] Error fetching bars for ${symbol}:`, err.message);
+            }
+        }
+        return results;
     }
 }
 

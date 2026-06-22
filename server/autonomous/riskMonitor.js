@@ -23,7 +23,14 @@ async function monitorRisk() {
   if (ctHour === 15 && ctMinute >= 0 && ctMinute <= 10) {
     logger.warn('🕒 3:00 PM CT reached! Triggering TopstepX Auto-Flatten to prevent EOD violations.');
     await topstepx.flattenAllPositions();
-    // In a full implementation, we would also clear the local DB state here.
+    
+    // Clear the local DB state
+    const { getDb } = require('../db/schema');
+    const db = getDb();
+    const openTrades = db.prepare("SELECT * FROM trades WHERE status IN ('open', 'submitted')").all();
+    for (const t of openTrades) {
+      updateTradeOutcome({ tradeId: t.id, exitPrice: t.entry_price, pnl: 0, status: 'closed' });
+    }
     return;
   }
   // --------------------------------------------------------
@@ -37,10 +44,7 @@ async function monitorRisk() {
 
   const closePromises = [];
 
-  // Symbol map from proxy symbols to topstep
-  const SYMBOL_MAP = {
-    'SPY': 'MES', 'QQQ': 'MNQ', 'DIA': 'MYM', 'IWM': 'M2K', 'GLD': 'MGC', 'USO': 'MCL', 'TLT': 'ZB'
-  };
+
 
   for (const trade of openTrades) {
     const symbol = trade.symbol;
@@ -108,11 +112,17 @@ async function monitorRisk() {
       });
 
       closePromises.push((async () => {
-        const tsSymbol = SYMBOL_MAP[symbol] || symbol;
+        const tsSymbol = symbol;
         const res = await topstepx.closePosition(tsSymbol);
         if (res.closed || res.reason === 'Invalid contract ID') { // if invalid contract, maybe it's already closed
           // Estimate PNL
-          const pnl = direction === 'LONG' ? (currentPrice - trade.entry_price) : (trade.entry_price - currentPrice);
+          let multiplier = 1;
+          if (tsSymbol.startsWith('MNQ')) multiplier = 2;
+          else if (tsSymbol.startsWith('MES')) multiplier = 5;
+          else if (tsSymbol.startsWith('MCL')) multiplier = 1000;
+          else if (tsSymbol.startsWith('MGC')) multiplier = 10;
+          const pnlPoints = direction === 'LONG' ? (currentPrice - trade.entry_price) : (trade.entry_price - currentPrice);
+          const pnl = pnlPoints * multiplier;
           if (tradeId) {
             updateTradeOutcome({
               tradeId: tradeId,

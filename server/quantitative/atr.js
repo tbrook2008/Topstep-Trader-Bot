@@ -44,8 +44,8 @@ function getDynamicATRMultiplier(history, baseMultiplier) {
   const stdDev = Math.sqrt(variance);
   
   // Assume baseline volatility of ~0.005 (0.5% per minute/period)
-  // Might be smaller, let's say 0.002
-  const baselineVol = 0.002;
+  // Might be smaller, let's say 0.0003 for equity futures
+  const baselineVol = 0.0003;
   
   // Ratio of current vol to baseline vol
   let volRatio = stdDev / baselineVol;

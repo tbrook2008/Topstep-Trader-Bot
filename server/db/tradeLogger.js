@@ -3,6 +3,18 @@ const crypto = require('crypto');
 const { getDb, getState, setState } = require('./schema');
 const logger = require('../utils/logger');
 
+function getGlobexSessionDate() {
+  const now = new Date();
+  const etNow = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+  if (etNow.getHours() >= 17) {
+    etNow.setDate(etNow.getDate() + 1);
+  }
+  const yyyy = etNow.getFullYear();
+  const mm = String(etNow.getMonth() + 1).padStart(2, '0');
+  const dd = String(etNow.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 function createHmac(data) {
   return crypto
     .createHmac('sha256', process.env.LOG_HMAC_SECRET || 'fallback-secret')
@@ -73,7 +85,7 @@ function updateTradeOutcome({ tradeId, exitPrice, pnl, status }) {
     .run(exitPrice ?? null, pnl ?? null, status, tradeId);
 
   // Update daily PnL
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getGlobexSessionDate();
   const storedDate = getState('daily_pnl_date');
   let dailyPnl = storedDate === today ? parseFloat(getState('daily_pnl') || '0') : 0;
   dailyPnl += (pnl || 0);
@@ -124,7 +136,7 @@ function getOpenTradeBySymbol(symbol) {
 }
 
 function getDailyPnl() {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getGlobexSessionDate();
   const storedDate = getState('daily_pnl_date');
   return storedDate === today ? parseFloat(getState('daily_pnl') || '0') : 0;
 }

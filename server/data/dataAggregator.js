@@ -1,4 +1,4 @@
-const alpacaClient = require('../execution/alpacaClient');
+const topstepClient = require('../execution/topstepxClient');
 const logger = require('../utils/logger');
 
 // Local buffer of historical bars to compute indicators
@@ -21,57 +21,53 @@ function getSearchTerm(symbol) {
 }
 
 /**
- * Prime the historical bars using Alpaca REST API
+ * Prime the historical bars using TopstepX REST API
  */
 async function primeHistory(symbol) {
   if (barsHistory[symbol]) return; // Already primed
 
-  logger.info(`Priming historical bars for ${symbol}...`);
-  const client = alpacaClient.getClient();
-  const isCrypto = isCryptoSymbol(symbol);
-  
-  // Get bars for the last 5 days to ensure we have enough data (overcoming weekends/holidays)
-  const start = new Date();
-  start.setDate(start.getDate() - 5);
+  logger.info(`Priming historical bars for ${symbol} via TopstepX...`);
   
   try {
-    let bars = [];
-    if (isCrypto) {
-      // Crypto: getCryptoBars returns Promise<Map<symbol, Bar[]>>
-      // Crypto bars use PascalCase without 'Price' suffix: Close, High, Low, Open, Volume
-      const resp = await client.getCryptoBars([symbol], {
-        timeframe: '1Min',
-        start: start.toISOString(),
-        limit: 1500
-      });
-      bars = resp.get(symbol) || [];
-      barsHistory[symbol] = bars.map(b => ({
-        open:   b.Open,
-        high:   b.High,
-        low:    b.Low,
-        close:  b.Close,
-        volume: b.Volume
-      }));
-    } else {
-      // Stocks: getBarsV2 is an async iterable, NOT a Promise
-      // Stock bars use PascalCase with 'Price' suffix: ClosePrice, HighPrice etc.
-      const iter = client.getBarsV2(symbol, {
-        timeframe: '1Min',
-        start: start.toISOString(),
-        limit: 1500
-      });
-      for await (const b of iter) {
-        bars.push({
-          open:   b.OpenPrice,
-          high:   b.HighPrice,
-          low:    b.LowPrice,
-          close:  b.ClosePrice,
-          volume: b.Volume
-        });
-      }
-      barsHistory[symbol] = bars;
+    // getLatestBars returns a single bar in the current implementation, but we can call retrieveBars directly here
+    const contractId = await topstepClient.getContractId(symbol);
+    if (!contractId) {
+      logger.error(`Contract ID not found for ${symbol}`);
+      barsHistory[symbol] = [];
+      return;
     }
-    logger.info(`Primed ${barsHistory[symbol].length} historical bars for ${symbol}`);
+    
+    const now = new Date();
+    const past = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000); // 5 days ago
+    const payload = {
+        contractId: contractId,
+        live: false,
+        startTime: past.toISOString(),
+        endTime: now.toISOString(),
+        unit: 2, // 2 = Minute
+        unitNumber: 1,
+        limit: 1500
+    };
+    
+    const axios = require('axios');
+    const response = await axios.post(`${topstepClient.baseUrl}/History/retrieveBars`, payload, {
+        headers: topstepClient._getAuthHeaders()
+    });
+    
+    if (response.data && response.data.success && response.data.bars) {
+      // API returns bars in reverse chronological order (newest first). We need oldest first for indicators.
+      const bars = response.data.bars.reverse().map(b => ({
+        open: b.o,
+        high: b.h,
+        low: b.l,
+        close: b.c,
+        volume: b.v
+      }));
+      barsHistory[symbol] = bars;
+      logger.info(`Primed ${barsHistory[symbol].length} historical bars for ${symbol}`);
+    } else {
+      barsHistory[symbol] = [];
+    }
   } catch (err) {
     logger.error(`Failed to prime history for ${symbol}`, { error: err.message });
     barsHistory[symbol] = [];

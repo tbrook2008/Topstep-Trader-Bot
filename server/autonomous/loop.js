@@ -1,13 +1,13 @@
 require('dotenv').config();
 const { aggregate, isCryptoSymbol } = require('../data/dataAggregator');
 const { execute }      = require('../execution/tradeExecutor');
-const alpacaClient     = require('../execution/alpacaClient');
+const topstepClient    = require('../execution/topstepxClient');
 const { logDecision }  = require('../db/tradeLogger');
 const killSwitch       = require('../risk/killSwitch');
 const logger           = require('../utils/logger');
 const { checkCorrelation } = require('../risk/correlation');
 
-const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'TLT'];
+const SYMBOLS = ['MNQ', 'MES', 'MCL', 'MGC'];
 
 const tickBuffer = {};
 
@@ -28,51 +28,22 @@ function startStream() {
 
 async function pollMarketData() {
   try {
-    const client = alpacaClient.getClient();
-    
-    // 1. Stocks
-    const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
-    if (stocks.length > 0) {
-      const latestBars = await client.getLatestBars(stocks);
-      for (const symbol of stocks) {
-        const bar = latestBars.get(symbol) || latestBars[symbol];
-        if (bar) {
-          const timestamp = bar.Timestamp;
-          if (!lastBarTimestamps[symbol] || new Date(timestamp) > new Date(lastBarTimestamps[symbol])) {
-            lastBarTimestamps[symbol] = timestamp;
-            logger.info(`Fetched new 1-min stock bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
-            const formattedBar = {
-              open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
-            };
-            await processSymbol(symbol, formattedBar);
-          }
+    const latestBars = await topstepClient.getLatestBars(SYMBOLS);
+    for (const symbol of SYMBOLS) {
+      const bar = latestBars[symbol];
+      if (bar) {
+        const timestamp = bar.Timestamp;
+        if (!lastBarTimestamps[symbol] || new Date(timestamp) > new Date(lastBarTimestamps[symbol])) {
+          lastBarTimestamps[symbol] = timestamp;
+          logger.info(`Fetched new 1-min TopstepX bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
+          const formattedBar = {
+            open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
+          };
+          await processSymbol(symbol, formattedBar);
         }
       }
     }
 
-    // 2. Crypto
-    const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
-    if (cryptos.length > 0) {
-      const latestCryptoBars = await client.getCryptoLatestBars(cryptos);
-      for (const symbol of cryptos) {
-         const bar = latestCryptoBars.get(symbol) || latestCryptoBars[symbol];
-         if (bar) {
-           const timestamp = bar.Timestamp;
-           if (!lastBarTimestamps[symbol] || new Date(timestamp) > new Date(lastBarTimestamps[symbol])) {
-             lastBarTimestamps[symbol] = timestamp;
-             logger.info(`Fetched new 1-min crypto bar for ${symbol}`, { close: bar.Close || bar.ClosePrice, volume: bar.Volume });
-             const formattedBar = {
-                open: bar.Open || bar.OpenPrice, 
-                high: bar.High || bar.HighPrice, 
-                low: bar.Low || bar.LowPrice, 
-                close: bar.Close || bar.ClosePrice, 
-                volume: bar.Volume
-             };
-             await processSymbol(symbol, formattedBar);
-           }
-         }
-      }
-    }
   } catch (error) {
     logger.error('Error polling market data:', { error: error.message || error });
   }
@@ -82,13 +53,13 @@ async function processSymbol(symbol, latestBar) {
   try {
     if (killSwitch.isActive()) return;
 
-    // Session time filter (EST) - Futures open at 18:00 (6:00 PM ET) and close at 16:10 (4:10 PM ET)
+    // Session time filter (EST) - Futures open at 17:00 (5:00 PM ET) and close at 16:10 (4:10 PM ET)
     const now = new Date();
     const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
     const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
     
-    // Allow: 18:00 to 23:59 AND 00:00 to 16:00
-    if (timeVal >= 1600 && timeVal < 1800) {
+    // Allow: 17:00 to 23:59 AND 00:00 to 16:00
+    if (timeVal >= 1600 && timeVal < 1700) {
       return; // Settlement window halt
     }
 
