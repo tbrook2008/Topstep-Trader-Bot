@@ -39,6 +39,26 @@ function calculateDonchian(candles, period = 20) {
     return { highest, lowest };
 }
 
+function computeRSI(closes, period = 14) {
+  if (closes.length < period + 1) return new Array(closes.length).fill(null);
+  const rsi = new Array(closes.length).fill(null);
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const d = closes[i] - closes[i - 1];
+    if (d > 0) gains += d; else losses += Math.abs(d);
+  }
+  let avgGain = gains / period;
+  let avgLoss = losses / period;
+  rsi[period] = avgLoss === 0 ? 100 : 100 - (100 / (1 + avgGain / avgLoss));
+  for (let i = period + 1; i < closes.length; i++) {
+    const d = closes[i] - closes[i - 1];
+    avgGain = (avgGain * (period - 1) + (d > 0 ? d : 0)) / period;
+    avgLoss = (avgLoss * (period - 1) + (d < 0 ? Math.abs(d) : 0)) / period;
+    rsi[i] = avgLoss === 0 ? 100 : 100 - (100 / (1 + avgGain / avgLoss));
+  }
+  return rsi;
+}
+
 /**
  * Evaluates a CTA-style Trend Following strategy (Donchian Channel Breakout + EMA alignment).
  * Uses 5m for trend and 1m for entries.
@@ -60,20 +80,30 @@ function evaluate(history, history5m, symbol = 'DEFAULT') {
     
     // 1. MACRO TREND ALIGNMENT (50 EMA on 5m)
     const ema50_5m = calculateEMA(history5m, emaPeriod) || calculateEMA(history5m, history5m.length - 1);
-    
     if (!ema50_5m) return null;
 
     // 2. ENTRY TRIGGER (20-period Donchian Channel on 1m)
     const donchian = calculateDonchian(history.slice(0, -1), donchianPeriod);
     if (!donchian) return null;
 
+    // 3. MOMENTUM / OVERBOUGHT FILTER
+    const closes1m = history.map(c => c.close);
+    const rsiArray = computeRSI(closes1m, 14);
+    const currentRSI = rsiArray[rsiArray.length - 1];
+
     let action = null;
 
     if (current1m.close > donchian.highest && current1m.close > ema50_5m) {
-        action = 'LONG';
+        // Only buy if not overbought
+        if (currentRSI && currentRSI < 70) {
+            action = 'LONG';
+        }
     }
     else if (current1m.close < donchian.lowest && current1m.close < ema50_5m) {
-        action = 'SHORT';
+        // Only short if not oversold
+        if (currentRSI && currentRSI > 30) {
+            action = 'SHORT';
+        }
     }
 
     if (!action) return null;

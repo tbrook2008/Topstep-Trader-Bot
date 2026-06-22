@@ -6,16 +6,16 @@
 const DAILY_LOSS_LIMIT = 1000;
 const RISK_PER_TRADE = 200;
 
-// Multiplier mapping from ETF dollar move to Futures dollar risk
-// e.g. $1 SPY move = 10 ES points = $500 risk
+// Multiplier mapping from ETF dollar move to Micro Futures dollar risk
+// e.g. $1 SPY move = 10 MES points = $50 risk
 const ETF_RISK_MULTIPLIERS = {
-    'SPY': 500, // 10x ratio * $50/pt
-    'QQQ': 800, // 40x ratio * $20/pt
-    'DIA': 500, // 100x ratio * $5/pt
-    'IWM': 500, // 10x ratio * $50/pt
-    'GLD': 1000,
-    'USO': 1000,
-    'TLT': 1000
+    'SPY': 50,  // MES: 1 SPY pt = 10 MES pts = 10 * $5 = $50
+    'QQQ': 80,  // MNQ: 1 QQQ pt = 40 MNQ pts = 40 * $2 = $80
+    'DIA': 50,  // MYM: 1 DIA pt = 100 MYM pts = 100 * $0.50 = $50
+    'IWM': 50,  // M2K: 1 IWM pt = 10 M2K pts = 10 * $5 = $50
+    'GLD': 100, // MGC: 1 GLD pt = 10 MGC pts = 10 * $10 = $100
+    'USO': 100, // MCL: 1 USO pt = 10 MCL pts = 10 * $10 = $100
+    'TLT': 1000 // ZB: No micro equivalent mapped, assume full $1000/pt
 };
 
 /**
@@ -42,16 +42,21 @@ function calculatePositionSize(symbol, entryPrice, stopLossPrice) {
     }
 
     // Determine dollar risk per contract based on the underlying futures contract
-    const riskMultiplier = ETF_RISK_MULTIPLIERS[symbol] || 500;
+    const riskMultiplier = ETF_RISK_MULTIPLIERS[symbol] || 50;
     const dollarRiskPerContract = distance * riskMultiplier;
 
     let qty = Math.floor(RISK_PER_TRADE / dollarRiskPerContract);
 
-    // If the distance is too large and qty drops to 0, we enforce a minimum of 1
-    // to act as a minimum position size, assuming they want to at least take the trade.
-    // Ideally this would trade micros (MES, MNQ) to be strictly under the limit.
-    if (dollarRiskPerContract > RISK_PER_TRADE || qty === 0) {
-        qty = 1; 
+    // If the distance is too large and qty drops to 0, we DO NOT force a trade.
+    // The risk is too high even for 1 micro contract, so return 0 to skip.
+    if (qty <= 0) {
+        return 0; 
+    }
+
+    // Topstep Max Contract Limit (e.g. 5 contracts for 50k combine)
+    const MAX_CONTRACTS = 5;
+    if (qty > MAX_CONTRACTS) {
+        qty = MAX_CONTRACTS;
     }
 
     return qty;

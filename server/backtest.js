@@ -20,7 +20,7 @@ alpacaClient.submitOrder = async (opts) => ({
   orderId: 'mock-' + Date.now(), 
   ...opts 
 });
-topstepx.getAccountBalance = async () => ({ balance: 50000 });
+topstepx.getAccountBalance = async () => ({ balance: 50000, canTrade: true });
 topstepx.placeMarketOrder = async (sym, side, qty) => ({ orderId: 'mock-ts-' + Date.now() });
 topstepx.flattenAllPositions = async () => true;
 

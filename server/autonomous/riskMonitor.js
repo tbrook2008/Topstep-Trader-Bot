@@ -31,7 +31,7 @@ async function monitorRisk() {
   // Fetch open trades from local DB since TopstepX lacks a simple positions endpoint
   const { getDb } = require('../db/schema');
   const db = getDb();
-  const openTrades = db.prepare('SELECT * FROM trades WHERE status = ?').all('open');
+  const openTrades = db.prepare("SELECT * FROM trades WHERE status IN ('open', 'submitted')").all();
 
   if (openTrades.length === 0) return;
 
@@ -39,7 +39,7 @@ async function monitorRisk() {
 
   // Symbol map from proxy symbols to topstep
   const SYMBOL_MAP = {
-    'SPY': 'ES', 'QQQ': 'NQ', 'DIA': 'YM', 'IWM': 'RTY', 'GLD': 'GC', 'USO': 'CL', 'TLT': 'ZB'
+    'SPY': 'MES', 'QQQ': 'MNQ', 'DIA': 'MYM', 'IWM': 'M2K', 'GLD': 'MGC', 'USO': 'MCL', 'TLT': 'ZB'
   };
 
   for (const trade of openTrades) {

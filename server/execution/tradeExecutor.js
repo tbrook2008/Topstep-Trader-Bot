@@ -145,12 +145,30 @@ async function execute({ bundle }) {
   // Step 7: Execute via TopstepX
   let order;
   const SYMBOL_MAP = {
-    'SPY': 'ES', 'QQQ': 'NQ', 'DIA': 'YM', 'IWM': 'RTY', 'GLD': 'GC', 'USO': 'CL', 'TLT': 'ZB'
+    'SPY': 'MES', 'QQQ': 'MNQ', 'DIA': 'MYM', 'IWM': 'M2K', 'GLD': 'MGC', 'USO': 'MCL', 'TLT': 'ZB'
   };
   const tsSymbol = SYMBOL_MAP[symbol] || symbol;
 
+  function calculateTicks(sym, etfDistance) {
+    let futuresPoints = 0;
+    let tickSize = 1;
+    switch (sym) {
+      case 'SPY': futuresPoints = etfDistance * 10; tickSize = 0.25; break; // MES
+      case 'QQQ': futuresPoints = etfDistance * 40; tickSize = 0.25; break; // MNQ
+      case 'DIA': futuresPoints = etfDistance * 100; tickSize = 1.00; break; // MYM
+      case 'IWM': futuresPoints = etfDistance * 10; tickSize = 0.10; break; // M2K
+      case 'GLD': futuresPoints = etfDistance * 10; tickSize = 0.10; break; // MGC
+      case 'USO': futuresPoints = etfDistance * 10; tickSize = 0.01; break; // MCL
+      default: futuresPoints = etfDistance * 10; tickSize = 0.25; break;
+    }
+    return Math.round(futuresPoints / tickSize);
+  }
+
+  const tpTicks = calculateTicks(symbol, targetDist);
+  const slTicks = calculateTicks(symbol, trailPrice);
+
   try {
-    const tsResponse = await topstepx.placeMarketOrder(tsSymbol, side, sizing.qty);
+    const tsResponse = await topstepx.placeMarketOrder(tsSymbol, side, sizing.qty, tpTicks, slTicks);
     if (!tsResponse) throw new Error('TopstepX Order Failed');
     
     order = { orderId: tsResponse.orderId || 'ts-order-' + Date.now() };

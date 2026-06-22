@@ -123,27 +123,37 @@ class TopstepXClient {
     }
 
     /**
-     * Place a Market Order for Futures
-     * e.g., NQ, ES
+     * Place a Market Order for Futures with optional bracket orders
+     * e.g., MES, MNQ
      */
-    async placeMarketOrder(symbol, side, quantity) {
+    async placeMarketOrder(symbol, side, quantity, tpTicks, slTicks) {
         if (!this.jwtToken || !this.accountId) await this.authenticate();
 
         try {
             const contractId = await this.getContractId(symbol);
             if (!contractId) throw new Error('Invalid contract ID');
 
-            console.log(`[TopstepX] Placing ${side} order for ${quantity} of ${symbol} (Contract ID: ${contractId})...`);
+            console.log(`[TopstepX] Placing ${side} order for ${quantity} of ${symbol} (Contract ID: ${contractId}) TP Ticks: ${tpTicks} SL Ticks: ${slTicks}...`);
             
             const sideInt = side.toLowerCase() === 'buy' ? 0 : 1;
             
-            const response = await axios.post(`${this.baseUrl}/Order/place`, {
+            const requestBody = {
                 accountId: this.accountId,
                 contractId: contractId,
                 type: 2, // 2 = Market Order
                 side: sideInt, // 0 = Buy, 1 = Sell
                 size: quantity
-            }, {
+            };
+
+            // Bracket logic for TopstepX API
+            if (tpTicks && tpTicks > 0) {
+                requestBody.takeProfitBracket = { ticks: Math.round(tpTicks), type: 1 }; // 1 = Limit Order
+            }
+            if (slTicks && slTicks > 0) {
+                requestBody.stopLossBracket = { ticks: Math.round(slTicks), type: 4 }; // 4 = Stop Order
+            }
+            
+            const response = await axios.post(`${this.baseUrl}/Order/place`, requestBody, {
                 headers: this._getAuthHeaders()
             });
             

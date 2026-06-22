@@ -368,6 +368,8 @@ pm2 restart all --update-env
 - **Dedicated Local Execution:** To comply strictly with Prop Firm rules regarding IP addresses and VPS restrictions, the `Topstep-Bot` executes solely on the local machine via PM2.
 - **REST Polling Pipeline:** Local Topstep-Bot bypasses Alpaca WebSocket connection limits by using 60-second REST polling for market quotes. This allows the Droplet `AI-Trader` to maintain its WebSocket feed uninterrupted.
 - **TopstepX Gateway Integration:** Authenticates natively via `topstepxClient.js` against the ProjectX API (`api.topstepx.com`), pulling down active 50k simulation account metrics.
-- **Strict Futures Proxies:** SPY→ES, QQQ→NQ, DIA→YM, IWM→RTY, GLD→GC, USO→CL, TLT→ZB.
+- **Strict Futures Proxies (Micros):** SPY→MES, QQQ→MNQ, DIA→MYM, IWM→M2K, GLD→MGC, USO→MCL. Leverage is reduced to respect the $1000 daily loss limit.
+- **Server-Side Bracket Orders:** Take Profit (tpTicks) and Stop Loss (slTicks) are directly injected into the ProjectX `Order/place` API payload to enforce protection at the exchange level.
+- **RSI Momentum Filter:** Blocks trades if asset is overbought (RSI > 70) for LONGS, or oversold (RSI < 30) for SHORTS to prevent entering at exhaustion points.
 - **Trade Spreadsheets:** Live market entries execute on Topstep and log concurrently to `server/data/trades.csv` for audit-ability and performance review.
 - **Daily Kill-Switches:** Added Daily Loss kill-switch and maximum consistency cap lock. Decoupled MACD/Kalman triggers and generated 30-day dynamically optimized parameters to massively boost trade frequency and profitability.
