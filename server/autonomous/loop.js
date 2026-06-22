@@ -11,61 +11,71 @@ const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'TLT'];
 
 const tickBuffer = {};
 
-let isStreamStarted = false;
+let isPolling = false;
+const lastBarTimestamps = {};
 
 function startStream() {
-  if (isStreamStarted) return;
-  isStreamStarted = true;
-  const client = alpacaClient.getClient();
-  const stockStream  = client.data_stream_v2;
-  const cryptoStream = client.crypto_stream_v1beta3;
+  if (isPolling) return;
+  isPolling = true;
+  logger.info('Starting REST polling for market data to avoid WebSocket limits...');
 
-  // Prevent MaxListenersExceededWarning on WebSocket reconnect loops
-  stockStream.setMaxListeners  && stockStream.setMaxListeners(0);
-  cryptoStream.setMaxListeners && cryptoStream.setMaxListeners(0);
-
-  stockStream.onConnect(() => {
-    logger.info('Connected to Alpaca Stock WebSocket');
-    const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
-    if (stocks.length > 0) stockStream.subscribeForBars(stocks);
-  });
-
-  stockStream.onStockBar(async bar => {
-    const symbol = bar.Symbol || bar.S;
-    logger.info(`Received 1-min stock bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
-    const formattedBar = {
-      open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
-    };
-    await processSymbol(symbol, formattedBar);
-  });
+  // Poll every 60 seconds (since we only care about 1m/5m bars)
+  setInterval(pollMarketData, 60 * 1000);
   
-  cryptoStream.onConnect(() => {
-    logger.info('Connected to Alpaca Crypto WebSocket');
+  // Also run immediately
+  pollMarketData();
+}
+
+async function pollMarketData() {
+  try {
+    const client = alpacaClient.getClient();
+    
+    // 1. Stocks
+    const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
+    if (stocks.length > 0) {
+      const latestBars = await client.getLatestBars(stocks);
+      for (const symbol of stocks) {
+        const bar = latestBars.get(symbol) || latestBars[symbol];
+        if (bar) {
+          const timestamp = bar.Timestamp;
+          if (!lastBarTimestamps[symbol] || new Date(timestamp) > new Date(lastBarTimestamps[symbol])) {
+            lastBarTimestamps[symbol] = timestamp;
+            logger.info(`Fetched new 1-min stock bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
+            const formattedBar = {
+              open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
+            };
+            await processSymbol(symbol, formattedBar);
+          }
+        }
+      }
+    }
+
+    // 2. Crypto
     const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
-    if (cryptos.length > 0) cryptoStream.subscribeForBars(cryptos);
-  });
-
-  cryptoStream.onCryptoBar(async bar => {
-    const symbol = bar.Symbol || bar.S;
-    logger.info(`Received 1-min crypto bar for ${symbol}`, { close: bar.Close || bar.ClosePrice, volume: bar.Volume });
-    const formattedBar = {
-      open: bar.Open || bar.OpenPrice, 
-      high: bar.High || bar.HighPrice, 
-      low: bar.Low || bar.LowPrice, 
-      close: bar.Close || bar.ClosePrice, 
-      volume: bar.Volume
-    };
-    await processSymbol(symbol, formattedBar);
-  });
-
-  cryptoStream.onError(err => logger.error('Alpaca Crypto WS Error', { error: err.message || err }));
-  stockStream.onError(err => logger.error('Alpaca Stock WS Error', { error: err.message || err }));
-
-  const cryptos = SYMBOLS.filter(s => isCryptoSymbol(s));
-  const stocks = SYMBOLS.filter(s => !isCryptoSymbol(s));
-
-  if (stocks.length > 0) stockStream.connect();
-  if (cryptos.length > 0) cryptoStream.connect();
+    if (cryptos.length > 0) {
+      const latestCryptoBars = await client.getCryptoLatestBars(cryptos);
+      for (const symbol of cryptos) {
+         const bar = latestCryptoBars.get(symbol) || latestCryptoBars[symbol];
+         if (bar) {
+           const timestamp = bar.Timestamp;
+           if (!lastBarTimestamps[symbol] || new Date(timestamp) > new Date(lastBarTimestamps[symbol])) {
+             lastBarTimestamps[symbol] = timestamp;
+             logger.info(`Fetched new 1-min crypto bar for ${symbol}`, { close: bar.Close || bar.ClosePrice, volume: bar.Volume });
+             const formattedBar = {
+                open: bar.Open || bar.OpenPrice, 
+                high: bar.High || bar.HighPrice, 
+                low: bar.Low || bar.LowPrice, 
+                close: bar.Close || bar.ClosePrice, 
+                volume: bar.Volume
+             };
+             await processSymbol(symbol, formattedBar);
+           }
+         }
+      }
+    }
+  } catch (error) {
+    logger.error('Error polling market data:', { error: error.message || error });
+  }
 }
 
 async function processSymbol(symbol, latestBar) {

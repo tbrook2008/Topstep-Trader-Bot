@@ -214,6 +214,34 @@ class TopstepXClient {
             return null;
         }
     }
+
+    /**
+     * Close a specific open position
+     */
+    async closePosition(symbol) {
+        if (!this.jwtToken || !this.accountId) await this.authenticate();
+        try {
+            const contractId = await this.getContractId(symbol);
+            if (!contractId) throw new Error('Invalid contract ID');
+            
+            console.log(`[TopstepX] Closing position for ${symbol}...`);
+            const response = await axios.post(`${this.baseUrl}/Position/closeContract`, {
+                accountId: this.accountId,
+                contractId: contractId
+            }, {
+                headers: this._getAuthHeaders()
+            });
+            
+            if (response.data && response.data.success) {
+                return { closed: true };
+            } else {
+                return { closed: false, reason: 'TopstepX API returned unsuccessful close' };
+            }
+        } catch (error) {
+            console.error('[TopstepX] Error closing position:', error.message);
+            return { closed: false, reason: error.message };
+        }
+    }
 }
 
 module.exports = new TopstepXClient();

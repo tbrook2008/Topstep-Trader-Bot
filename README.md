@@ -1,9 +1,9 @@
-# AI Trader — Autonomous Quantitative Trading System
+# Topstep Trader Bot — Autonomous Futures Prop Firm System
 
-> **Status**: Active — Paper trading on Alpaca. Crypto-first (8 pairs).  
-> **Version**: v4.1.0 — May 2026  
+> **Status**: Active — Live trading on TopstepX Combine. Futures only (ES, NQ, YM, RTY, GC, CL, ZB).  
+> **Version**: v5.0.0 — Prop Firm Edition  
 > **Language**: Node.js 18+  
-> **Capital**: Designed for small accounts ($500+). No PDT restrictions on crypto.
+> **Capital**: Designed for Topstep $50K+ combines. Enforces $1000 DLL and max contract limits.
 
 ---
 
@@ -21,22 +21,19 @@ Both layers must agree before a trade is placed. This dramatically reduces false
 
 ## Signal Pipeline (fires every 60 seconds per symbol)
 
-```
-Alpaca WebSocket Quote Stream
+Alpaca REST Polling (Proxy Market Data)
     → 1-minute bar buffer (mid-price of bid/ask)
     → dataAggregator: historical bar priming + news scraping (5-min cache)
     → hmm: GMM-based regime classification (momentum or mean-reverting)
     → tradeExecutor:
         → kalman.evaluate() OR ouModel.evaluate() → LONG/SHORT/NO_TRADE
         → volumeProfile.analyzeVolume() → blocks dead-volume entries
-        → kellyCriterion.getPositionSize() → fractional Kelly sizing
-        → validator.runChecks() → 12-point pre-trade safety gate
-        → calculateATR() & getDynamicATRMultiplier() → volatility-adjusted dynamic stop/target (base 3.5x ATR stop, dynamically scaled by recent return std-dev)
-        → alpacaClient.submitOrder() → market order on Alpaca
-        → tradeLogger.logTrade() → HMAC-chained SQLite record
-        → webhook broadcast → localhost:4000/api/internal/signal (AITrader-Friends Integration)
-    → riskMonitor (every 60s): software stop-loss/take-profit for open crypto positions
-```
+        → propRiskManager.calculatePositionSize() → fixed dollar risk based on ETF-to-Futures multiplier
+        → validator.runChecks() → Topstep rule safety gate
+        → calculateATR() & getDynamicATRMultiplier() → volatility-adjusted dynamic stop/target
+        → topstepxClient.placeMarketOrder() → market order on TopstepX (Mapped e.g. SPY->ES)
+        → tradeLogger.logTrade() → SQLite record
+    → riskMonitor (every 60s): software stop-loss/take-profit tracking local DB and auto-flattening TopstepX positions. Also Auto-Flattens at 3:00 PM CT.
 
 ---
 
@@ -69,10 +66,11 @@ server/
 │   ├── atr.js                ATR calculator for dynamic stop sizing
 │   └── volumeProfile.js      Volume analysis — dead volume gate + classification
 ├── execution/
-│   ├── alpacaClient.js       Alpaca SDK wrapper — orders, positions, account, closePosition
+│   ├── topstepxClient.js     TopstepX API wrapper — orders, balance, closePosition
+│   ├── alpacaClient.js       Alpaca wrapper (used ONLY for proxy market data)
 │   └── tradeExecutor.js      Full execution pipeline leveraging statistical models
 ├── risk/
-│   ├── kellyCriterion.js     Fractional Kelly (÷4) capped at 6% portfolio
+│   ├── propRiskManager.js    Topstep $1000 DLL and $200 trade risk manager
 │   ├── validator.js          12-check pre-trade gate + post-loss cooldown multiplier
 │   ├── correlation.js        Pearson correlation guard against open positions
 │   └── killSwitch.js         Auto (daily loss limit) + manual kill switch
