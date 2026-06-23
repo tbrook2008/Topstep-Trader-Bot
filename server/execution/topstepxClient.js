@@ -232,6 +232,59 @@ class TopstepXClient {
     }
 
     /**
+     * Cancel all working orders for a specific symbol
+     */
+    async cancelAllWorkingOrdersForSymbol(symbol) {
+        if (!this.jwtToken || !this.accountId) await this.authenticate();
+        try {
+            const contractId = await this.getContractId(symbol);
+            if (!contractId) throw new Error('Invalid contract ID');
+
+            console.log(`[TopstepX] Searching for working orders to cancel for ${symbol}...`);
+            // Fetch working orders
+            const response = await axios.post(`${this.baseUrl}/Order/search`, {
+                accountId: this.accountId,
+                // Some APIs ignore onlyWorking, so we provide timestamps to bound the search
+                startTimestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                endTimestamp: new Date().toISOString()
+            }, {
+                headers: this._getAuthHeaders()
+            });
+
+            if (response.data && response.data.orders) {
+                // Filter for working orders (status 1 = Pending, 2 = Working/Open, 3 = Partial)
+                // We'll just cancel anything that isn't status 4 (Cancelled), 5 (Filled), 6 (Rejected)
+                const workingOrders = response.data.orders.filter(o => 
+                    o.contractId === contractId && o.status < 4
+                );
+
+                if (workingOrders.length > 0) {
+                    console.log(`[TopstepX] Found ${workingOrders.length} working order(s) for ${symbol}. Cancelling...`);
+                    for (const order of workingOrders) {
+                        try {
+                            await axios.post(`${this.baseUrl}/Order/cancel`, {
+                                accountId: this.accountId,
+                                orderId: order.id
+                            }, {
+                                headers: this._getAuthHeaders()
+                            });
+                            console.log(`[TopstepX] Cancelled order ${order.id}`);
+                        } catch (err) {
+                            console.error(`[TopstepX] Failed to cancel order ${order.id}:`, err.response ? err.response.data : err.message);
+                        }
+                    }
+                    // Give Topstep a brief moment to process the cancellations
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+            return true;
+        } catch (error) {
+            console.error(`[TopstepX] Error cancelling working orders for ${symbol}:`, error.message);
+            return false;
+        }
+    }
+
+    /**
      * Close a specific open position
      */
     async closePosition(symbol) {
@@ -240,6 +293,9 @@ class TopstepXClient {
             const contractId = await this.getContractId(symbol);
             if (!contractId) throw new Error('Invalid contract ID');
             
+            // CRITICAL FIX: Cancel working brackets first so closeContract doesn't fail!
+            await this.cancelAllWorkingOrdersForSymbol(symbol);
+
             console.log(`[TopstepX] Closing position for ${symbol}...`);
             const response = await axios.post(`${this.baseUrl}/Position/closeContract`, {
                 accountId: this.accountId,
@@ -251,7 +307,8 @@ class TopstepXClient {
             if (response.data && response.data.success) {
                 return { closed: true };
             } else {
-                return { closed: false, reason: 'TopstepX API returned unsuccessful close' };
+                console.error('[TopstepX] closeContract failed:', response.data);
+                return { closed: false, reason: response.data.errorMessage || 'TopstepX API returned unsuccessful close' };
             }
         } catch (error) {
             console.error('[TopstepX] Error closing position:', error.message);
