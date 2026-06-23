@@ -4,7 +4,7 @@ const vwapReversion = require('./quantitative/vwapReversion');
 const fs = require('fs');
 const path = require('path');
 
-const SYMBOLS = ['MNQ', 'MES', 'MCL', 'MGC'];
+const SYMBOLS = ['MNQ', 'MES', 'MYM', 'M2K', 'MCL', 'MGC'];
 const LIMIT = 5000;
 
 const sdMultipliers = [1.5, 2.0, 2.5];

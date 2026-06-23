@@ -61,7 +61,8 @@ async function primeHistory(symbol) {
         high: b.h,
         low: b.l,
         close: b.c,
-        volume: b.v
+        volume: b.v,
+        time: b.t
       }));
       barsHistory[symbol] = bars;
       logger.info(`Primed ${barsHistory[symbol].length} historical bars for ${symbol}`);

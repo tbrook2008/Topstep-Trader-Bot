@@ -7,7 +7,7 @@ const killSwitch       = require('../risk/killSwitch');
 const logger           = require('../utils/logger');
 const { checkCorrelation } = require('../risk/correlation');
 
-const SYMBOLS = ['MNQ', 'MES', 'MCL', 'MGC'];
+const SYMBOLS = ['MNQ', 'MES', 'MYM', 'M2K', 'MCL', 'MGC'];
 
 const tickBuffer = {};
 
@@ -37,7 +37,7 @@ async function pollMarketData() {
           lastBarTimestamps[symbol] = timestamp;
           logger.info(`Fetched new 1-min TopstepX bar for ${symbol}`, { close: bar.ClosePrice, volume: bar.Volume });
           const formattedBar = {
-            open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume
+            open: bar.OpenPrice, high: bar.HighPrice, low: bar.LowPrice, close: bar.ClosePrice, volume: bar.Volume, time: bar.Timestamp
           };
           await processSymbol(symbol, formattedBar);
         }
@@ -78,7 +78,7 @@ async function processSymbol(symbol, latestBar) {
     await execute({ bundle });
 
   } catch (err) {
-    logger.error('Unhandled error in processSymbol', { symbol, error: err.message });
+    logger.error('Unhandled error in processSymbol', { symbol, error: err.message, stack: err.stack });
   }
 }
 

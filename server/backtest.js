@@ -37,50 +37,46 @@ process.env.DRY_RUN = 'false';
 const tradeExecutor = require('./execution/tradeExecutor');
 
 // Config
-const SYMBOLS = ['SPY', 'QQQ', 'DIA', 'IWM', 'GLD', 'USO', 'TLT'];
+const SYMBOLS = ['MNQ', 'MES', 'MYM', 'M2K', 'MCL', 'MGC'];
 const HISTORY_LIMIT = 500;
 const DAYS_TO_FETCH = 5;
 
-// We still need the original alpaca client methods to fetch historical data
-// We can use the un-mocked getClient method.
+const axios = require('axios');
+const topstepClient = require('./execution/topstepxClient');
+
 async function fetchHistoricalData(symbol, days) {
-  const client = alpacaClient.getClient();
   const start = new Date();
   start.setDate(start.getDate() - days);
+  const now = new Date();
   
   let bars = [];
   try {
-    const isCrypto = symbol.includes('/') || symbol.endsWith('USD');
-    if (isCrypto) {
-      const resp = await client.getCryptoBars([symbol], {
-        timeframe: '1Min',
-        start: start.toISOString(),
-        limit: 10000
-      });
-      bars = resp.get(symbol) || [];
-      bars = bars.map(b => ({
-        open: b.Open,
-        high: b.High,
-        low: b.Low,
-        close: b.Close,
-        volume: b.Volume,
-        timestamp: b.Timestamp
+    const contractId = await topstepClient.getContractId(symbol);
+    if (!contractId) return [];
+
+    const payload = {
+        contractId: contractId,
+        live: false,
+        startTime: start.toISOString(),
+        endTime: now.toISOString(),
+        unit: 2, // Minute
+        unitNumber: 1,
+        limit: 1500 * days // Roughly 1500 min per day
+    };
+
+    const response = await axios.post(`${topstepClient.baseUrl}/History/retrieveBars`, payload, {
+        headers: topstepClient._getAuthHeaders()
+    });
+
+    if (response.data && response.data.success && response.data.bars) {
+      bars = response.data.bars.reverse().map(b => ({
+        open: b.o,
+        high: b.h,
+        low: b.l,
+        close: b.c,
+        volume: b.v,
+        timestamp: b.t
       }));
-    } else {
-      const iter = client.getBarsV2(symbol, {
-        timeframe: '1Min',
-        start: start.toISOString(),
-      });
-      for await (const b of iter) {
-        bars.push({
-          open: b.OpenPrice,
-          high: b.HighPrice,
-          low: b.LowPrice,
-          close: b.ClosePrice,
-          volume: b.Volume,
-          timestamp: b.Timestamp
-        });
-      }
     }
     return bars;
   } catch (err) {

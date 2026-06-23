@@ -106,7 +106,7 @@ class TopstepXClient {
         try {
             const response = await axios.post(`${this.baseUrl}/Contract/search`, {
                 searchText: symbol,
-                live: process.env.DRY_RUN !== 'true' // Adjust to true if trading live, but we use false to search broad matches usually
+                live: process.env.TRADING_MODE === 'live'
             }, {
                 headers: this._getAuthHeaders()
             });
@@ -147,12 +147,16 @@ class TopstepXClient {
                 size: quantity
             };
 
-            // Bracket logic for TopstepX API
+            // Bracket logic for TopstepX API (Offsets are relative to entry)
+            // Buy (0): TP is positive, SL is negative
+            // Sell (1): TP is negative, SL is positive
             if (tpTicks && tpTicks > 0) {
-                requestBody.takeProfitBracket = { ticks: Math.round(tpTicks), type: 1 }; // 1 = Limit Order
+                const finalTpTicks = sideInt === 0 ? Math.round(tpTicks) : -Math.round(tpTicks);
+                requestBody.takeProfitBracket = { ticks: finalTpTicks, type: 1 }; // 1 = Limit Order
             }
             if (slTicks && slTicks > 0) {
-                requestBody.stopLossBracket = { ticks: Math.round(slTicks), type: 4 }; // 4 = Stop Order
+                const finalSlTicks = sideInt === 0 ? -Math.round(slTicks) : Math.round(slTicks);
+                requestBody.stopLossBracket = { ticks: finalSlTicks, type: 4 }; // 4 = Stop Order
             }
             
             const response = await axios.post(`${this.baseUrl}/Order/place`, requestBody, {

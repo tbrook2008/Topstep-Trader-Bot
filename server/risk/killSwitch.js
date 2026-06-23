@@ -9,6 +9,13 @@ function activate(reason = 'Manual activation') {
   setState('kill_switch', 'true');
   setState('kill_switch_reason', reason);
   logger.warn('🚨 KILL SWITCH ACTIVATED', { reason });
+  
+  try {
+    const topstepx = require('../execution/topstepxClient');
+    topstepx.flattenAllPositions().catch(err => logger.error('Failed to flatten positions on kill switch activation', { error: err.message }));
+  } catch (err) {
+    logger.error('Failed to execute flattenAllPositions on kill switch', { error: err.message });
+  }
 }
 
 function deactivate() {
@@ -31,8 +38,6 @@ function autoCheckDailyLimits(dailyPnl) {
 
   if (dailyPnl <= -maxLossUsd && !isActive()) {
     activate(`Auto: Daily loss limit hit ($${dailyPnl.toFixed(2)} / -$${maxLossUsd.toFixed(2)})`);
-    const topstepx = require('../execution/topstepxClient');
-    topstepx.flattenAllPositions().catch(err => logger.error('Failed to flatten on daily loss limit', { error: err.message }));
     return true;
   }
   
