@@ -112,13 +112,18 @@ class TopstepXClient {
             });
 
             if (response.data && response.data.contracts && response.data.contracts.length > 0) {
-                // Find exact or closest match. The API returns an array of contracts.
                 const contractId = response.data.contracts[0].id;
                 this.contractCache[symbol] = contractId;
                 return contractId;
             }
             throw new Error('Contract not found');
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                console.log(`[TopstepX] Token expired. Re-authenticating...`);
+                this.jwtToken = null;
+                await this.authenticate();
+                return this.getContractId(symbol); // Retry
+            }
             console.error(`[TopstepX] Error resolving contract ID for ${symbol}:`, error.message);
             return null;
         }
@@ -144,7 +149,8 @@ class TopstepXClient {
                 contractId: contractId,
                 type: 2, // 2 = Market Order
                 side: sideInt, // 0 = Buy, 1 = Sell
-                size: quantity
+                size: quantity,
+                isAutoOco: true // Required for Bracket Orders
             };
 
             // Bracket logic for TopstepX API (Offsets are relative to entry)

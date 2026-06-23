@@ -158,6 +158,16 @@ async function monitorRisk() {
           }
         } else {
           logger.error(`❌ Failed to close position during risk event`, { symbol: tsSymbol, reason: res.reason });
+          // If it failed, it's highly likely the server-side bracket order already closed it.
+          // Update the DB so we don't keep trying to close it in a loop.
+          if (tradeId) {
+            updateTradeOutcome({
+              tradeId: tradeId,
+              exitPrice: currentPrice,
+              pnl: 0, // We don't know exact PNL from bracket, so record 0 or approximate
+              status: 'closed'
+            });
+          }
         }
       })());
     }

@@ -33,10 +33,11 @@ const DAYS_TO_FETCH = 7; // Rigorous backtesting
 
 // Grid search parameter combinations for VWAP
 const minVolumeRatios = [1.0, 1.2];
-const sdMultipliers = [1.5, 2.0];
-const rsiOversolds = [35, 40];
-const rsiOverboughts = [60, 65];
-const stopLossMultipliers = [1.0, 1.5];
+const sdMultipliers = [2.0, 2.5];
+const rsiOversolds = [35];
+const rsiOverboughts = [65];
+const stopLossMultipliers = [1.5, 2.0];
+const takeProfitMultipliers = [0.8, 1.0];
 
 const combinations = [];
 for (const v of minVolumeRatios) {
@@ -44,13 +45,16 @@ for (const v of minVolumeRatios) {
     for (const rsio of rsiOversolds) {
       for (const rsib of rsiOverboughts) {
         for (const sl of stopLossMultipliers) {
-          combinations.push({
-            minVolumeRatio: v,
-            sdMultiplier: sd,
-            rsiOversold: rsio,
-            rsiOverbought: rsib,
-            stopLossMultiplier: sl
-          });
+          for (const tp of takeProfitMultipliers) {
+            combinations.push({
+              minVolumeRatio: v,
+              sdMultiplier: sd,
+              rsiOversold: rsio,
+              rsiOverbought: rsib,
+              stopLossMultiplier: sl,
+              takeProfitMultiplier: tp
+            });
+          }
         }
       }
     }

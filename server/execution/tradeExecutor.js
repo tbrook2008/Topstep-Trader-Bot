@@ -49,6 +49,16 @@ async function execute({ bundle }) {
   if (!signal) {
     return { executed: false, reason: 'VWAP Reversion conditions not met' };
   }
+
+  // Session time filter (EST)
+  const now = new Date();
+  const nyTimeStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
+  const nyTime = new Date(nyTimeStr);
+  const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
+  if (!((timeVal >= 945 && timeVal <= 1130) || (timeVal >= 1330 && timeVal <= 1530))) {
+    logger.warn('Trade blocked: Outside optimal trading hours', { timeVal });
+    return { executed: false, reason: 'Outside optimal trading session' };
+  }
   
   const direction = signal.action;
   const strategy  = 'VWAP Mean Reversion';
@@ -57,6 +67,20 @@ async function execute({ bundle }) {
   
   const volClass = classifyVolume(history).toUpperCase();
 
+  // Macro Trend Alignment (200 SMA) - Only for trend-following strategies
+  if (regime !== 'mean-reverting') {
+    const smaPeriod = Math.min(history.length, 200);
+    const smaSlice = history.slice(-smaPeriod);
+    const sma = smaSlice.reduce((sum, b) => sum + b.close, 0) / smaPeriod;
+    if (direction === 'LONG' && price < sma) {
+        logger.warn(`Trade blocked: LONG but price (${price}) < 200 SMA (${sma})`);
+        return { executed: false, reason: 'Macro Trend Alignment: Counter-trend LONG' };
+    }
+    if (direction === 'SHORT' && price > sma) {
+        logger.warn(`Trade blocked: SHORT but price (${price}) > 200 SMA (${sma})`);
+        return { executed: false, reason: 'Macro Trend Alignment: Counter-trend SHORT' };
+    }
+  }
 
   logger.info('Trade executor started', {
     symbol,

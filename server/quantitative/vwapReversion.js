@@ -160,7 +160,7 @@ function calculateVWAP(candles, symbol = 'SPY') {
     let variance = cumulativeVariance / cumulativeVolume;
     let sd = Math.sqrt(variance);
 
-    const sdMultiplier = getSymbolParams(symbol).sdMultiplier || 2.0;
+    const sdMultiplier = getSymbolParams(symbol).sdMultiplier || 2.5;
 
     return {
         vwap: vwap,
@@ -198,8 +198,9 @@ function evaluate(history, symbol = 'SPY') {
     const params = getSymbolParams(symbol);
     const rsiOversold = params.rsiOversold || 35;
     const rsiOverbought = params.rsiOverbought || 65;
-    const volumeReq = params.minVolumeRatio || 1.2;
+    const volumeReq = params.minVolumeRatio || 1.5;
     const slMultiplier = params.stopLossMultiplier || 1.5;
+    const tpMultiplier = params.takeProfitMultiplier || 1.0;
 
     const { vwap, upperBand, lowerBand } = vwapData;
     const isHighVolume = currentCandle.volume >= (volumeReq * volumeSMA);
@@ -212,7 +213,7 @@ function evaluate(history, symbol = 'SPY') {
         return {
             action: 'LONG',
             entry: currentCandle.close,
-            target: vwap,
+            target: currentCandle.close + (tpMultiplier * atr),
             stopLoss: currentCandle.close - (slMultiplier * atr),
             metadata: { rsi, vwap, lowerBand, volume: currentCandle.volume, volumeSMA, atr }
         };
@@ -226,7 +227,7 @@ function evaluate(history, symbol = 'SPY') {
         return {
             action: 'SHORT',
             entry: currentCandle.close,
-            target: vwap,
+            target: currentCandle.close - (tpMultiplier * atr),
             stopLoss: currentCandle.close + (slMultiplier * atr),
             metadata: { rsi, vwap, upperBand, volume: currentCandle.volume, volumeSMA, atr }
         };
