@@ -1,8 +1,12 @@
 const axios = require('axios');
+const https = require('https');
 const dotenv = require('dotenv');
 
 const path = require('path');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+// Setup axios to use keepAlive to prevent continuous DNS lookups that cause ENOTFOUND
+axios.defaults.httpsAgent = new https.Agent({ keepAlive: true, family: 4 });
 
 class TopstepXClient {
     constructor() {
@@ -363,6 +367,12 @@ class TopstepXClient {
                     };
                 }
             } catch (err) {
+                if (err.response && err.response.status === 401) {
+                    console.log(`[TopstepX] Token expired during getLatestBars. Re-authenticating...`);
+                    this.jwtToken = null;
+                    await this.authenticate();
+                    return this.getLatestBars(symbols, count);
+                }
                 console.error(`[TopstepX] Error fetching bars for ${symbol}:`, err.message);
             }
         }
