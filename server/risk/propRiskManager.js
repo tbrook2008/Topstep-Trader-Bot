@@ -56,8 +56,9 @@ function calculatePositionSize(symbol, entryPrice, stopLossPrice) {
         return 0; 
     }
 
-    // Topstep Max Contract Limit (e.g. 5 contracts for 50k combine, we use 2 max to be safe)
-    const MAX_CONTRACTS = 2;
+    // Topstep Max Contract Limit: 5 micro contracts per position for 50k combine
+    const MAX_CONTRACTS = 5;
+    
     if (qty > MAX_CONTRACTS) {
         qty = MAX_CONTRACTS;
     }

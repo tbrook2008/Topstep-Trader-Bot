@@ -10,7 +10,7 @@ const MIN_CONFIDENCE   = parseFloat(process.env.APPROVAL_THRESHOLD       || '62'
 const MAX_CONSEC_LOSS  = parseInt(process.env.MAX_CONSECUTIVE_LOSSES     || '3');
 const MAX_EXPOSURE_PCT = 0.40;   // 40% max total portfolio exposure (tightened from 50%)
 const MAX_POSITION_PCT = parseFloat(process.env.MAX_POSITION_PCT         || '0.06');
-const COOLDOWN_MIN     = parseInt(process.env.COOLDOWN_MINUTES            || '45');
+const COOLDOWN_MIN     = parseInt(process.env.COOLDOWN_MINUTES            || '30');
 const MAX_DAILY_LOSS   = parseFloat(process.env.MAX_DAILY_LOSS_PCT        || '0.03');
 
 /**
@@ -60,9 +60,9 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
       detail: 'Alpaca does not support short selling cryptocurrencies',
     },
     {
-      name: 'Absolute Minimum Balance Guard ($48,000)',
-      passed: balance > 48000,
-      detail: `Current balance ($${balance}) must stay above $48,000 Topstep hard deck.`,
+      name: 'Absolute Minimum Balance Guard ($48,500)',
+      passed: balance > 48500,
+      detail: `Current balance ($${balance}) must stay above $48,500. Below $48,000 = Topstep MLL breach and account termination.`,
     },
 
     {
@@ -71,9 +71,9 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
       detail: `Current streak: ${consecLoss}`,
     },
     {
-      name: `Daily Loss < ${MAX_DAILY_LOSS * 100}% of balance`,
-      passed: dailyPnl > -(balance * MAX_DAILY_LOSS),
-      detail: `Daily PnL: $${dailyPnl.toFixed(2)} / limit: -$${(balance * MAX_DAILY_LOSS).toFixed(2)}`,
+      name: 'Daily Loss < $900 (Topstep DLL Protection)',
+      passed: dailyPnl > -900,
+      detail: `Daily PnL: $${dailyPnl.toFixed(2)} / hard limit: -$900 (Topstep DLL is -$1,000)`,
     },
     {
       name: 'Total Exposure < 50%',
@@ -111,20 +111,7 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
     },
   ];
 
-  // ── PDT Rule Warning (stocks under $25k) ──────────────────────────────────
-  // Pattern Day Trader: >3 round-trip day trades in 5 days on accounts < $25k
-  // This does NOT block the trade (paper trading is fine) but warns loudly.
-  if (!isCryptoSymbol(symbol) && balance < 25000) {
-    const mode = process.env.TRADING_MODE || 'paper';
-    if (mode === 'live') {
-      logger.warn('⚠️  PDT RULE RISK — stock account under $25,000', {
-        symbol,
-        balance,
-        warning: 'More than 3 day-trades in 5 days will flag your Alpaca account.',
-        action:  'Consider switching to WATCHED_SYMBOLS=BTC/USD,ETH/USD for crypto (no PDT rule).',
-      });
-    }
-  }
+  // PDT Rule does not apply to futures accounts — Topstep is a CME futures account.
 
   const failed = checks.filter(c => !c.passed).map(c => c.name);
   const passed = failed.length === 0;

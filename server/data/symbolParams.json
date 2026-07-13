@@ -1,42 +1,50 @@
 {
   "MNQ": {
-    "minVolumeRatio": 1,
-    "sdMultiplier": 2,
-    "rsiOversold": 35,
-    "rsiOverbought": 65,
+    "minVolumeRatio": 1.5,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
     "stopLossMultiplier": 1.5,
-    "takeProfitMultiplier": 1
+    "takeProfitMultiplier": 2.0
   },
   "MES": {
-    "minVolumeRatio": 1,
+    "minVolumeRatio": 1.5,
     "sdMultiplier": 2.5,
-    "rsiOversold": 35,
-    "rsiOverbought": 65,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
     "stopLossMultiplier": 1.5,
-    "takeProfitMultiplier": 1
+    "takeProfitMultiplier": 2.0
   },
   "MYM": {
-    "minVolumeRatio": 1.2,
-    "sdMultiplier": 2,
-    "rsiOversold": 35,
-    "rsiOverbought": 65,
+    "minVolumeRatio": 1.5,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
     "stopLossMultiplier": 1.5,
-    "takeProfitMultiplier": 1
+    "takeProfitMultiplier": 2.0
   },
   "M2K": {
-    "minVolumeRatio": 1.2,
-    "sdMultiplier": 2,
-    "rsiOversold": 35,
-    "rsiOverbought": 65,
+    "minVolumeRatio": 1.5,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
     "stopLossMultiplier": 1.5,
-    "takeProfitMultiplier": 1
+    "takeProfitMultiplier": 2.0
+  },
+  "MCL": {
+    "minVolumeRatio": 1.5,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
+    "stopLossMultiplier": 1.5,
+    "takeProfitMultiplier": 2.0
   },
   "MGC": {
-    "minVolumeRatio": 1,
-    "sdMultiplier": 2,
-    "rsiOversold": 35,
-    "rsiOverbought": 65,
-    "stopLossMultiplier": 2,
-    "takeProfitMultiplier": 1
+    "minVolumeRatio": 1.5,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 30,
+    "rsiOverbought": 70,
+    "stopLossMultiplier": 1.5,
+    "takeProfitMultiplier": 2.0
   }
 }

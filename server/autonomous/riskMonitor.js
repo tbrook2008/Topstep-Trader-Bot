@@ -6,14 +6,42 @@ const { isCryptoSymbol } = require('../data/dataAggregator');
 const logger = require('../utils/logger');
 const { barsHistory } = require('../data/dataAggregator');
 const { calculateATR, getDynamicATRMultiplier } = require('../quantitative/atr');
-
+const { sendSMS } = require('../utils/notifier');
 /**
  * Periodically checks ALL open positions against local DB stop-loss and take-profit limits.
  * Required because we removed Alpaca OCO/Bracket orders to avoid integer/distance constraints.
  */
 async function monitorRisk() {
   logger.info('🛡️ Running risk monitor for all positions...');
-  
+
+  // --- TOPSTEP RULE: Maximum Loss Limit (MLL) — $2,000 trailing drawdown from peak ---
+  // Topstep hard-terminates the account when balance drops $2,000 from its all-time peak.
+  // We self-protect at $1,800 drawdown to give a $200 buffer before broker liquidation.
+  try {
+    const accountInfo = await topstepx.getAccountBalance();
+    if (accountInfo) {
+      const currentBalance = accountInfo.currentBalance || accountInfo.accountBalance || accountInfo.balance || 0;
+      if (currentBalance > 0) {
+        const { getState, setState } = require('../db/schema');
+        const killSwitch = require('../risk/killSwitch');
+        const storedPeak = parseFloat(getState('peak_equity') || '0');
+        if (currentBalance > storedPeak) {
+          setState('peak_equity', currentBalance.toString());
+        }
+        const peakEquity = Math.max(currentBalance, storedPeak);
+        const drawdown = peakEquity - currentBalance;
+        logger.info(`MLL Monitor: Balance=$${currentBalance.toFixed(2)}, Peak=$${peakEquity.toFixed(2)}, Drawdown=$${drawdown.toFixed(2)}`);
+        if (drawdown >= 1800 && !killSwitch.isActive()) {
+          logger.warn(`🚨 MLL BREACH IMMINENT: Drawdown $${drawdown.toFixed(2)} >= $1,800 threshold! Activating kill switch.`);
+          killSwitch.activate(`MLL Protection: Drawdown $${drawdown.toFixed(2)} from peak $${peakEquity.toFixed(2)} — halting before Topstep terminates account.`);
+        }
+      }
+    }
+  } catch (mllErr) {
+    logger.error('MLL monitor failed to fetch account balance', { error: mllErr.message });
+  }
+  // ---------------------------------------------------------------------------------
+
   // --- TOPSTEP RULE: Auto-Flatten at 3:00 PM CT (15:00) ---
   const now = new Date();
   const options = { timeZone: 'America/Chicago', hour12: false, hour: 'numeric', minute: 'numeric' };
@@ -132,6 +160,7 @@ async function monitorRisk() {
             });
           }
           logger.info(`✅ Closed position successfully`, { symbol, pnl });
+          sendSMS(`🏁 AI Trader EXIT: Closed ${trade.direction} ${symbol} @ $${currentPrice.toFixed(2)}\nEstimated PnL: $${pnl.toFixed(2)}`);
 
           // Broadcast CLOSE to Friends
           try {
@@ -168,6 +197,7 @@ async function monitorRisk() {
               status: 'closed'
             });
           }
+          sendSMS(`🏁 AI Trader EXIT: Topstep Bracket Hit on ${symbol} @ ~$${currentPrice.toFixed(2)}\nCheck Topstep Dashboard for exact PnL.`);
         }
       })());
     }

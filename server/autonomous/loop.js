@@ -7,7 +7,7 @@ const killSwitch       = require('../risk/killSwitch');
 const logger           = require('../utils/logger');
 const { checkCorrelation } = require('../risk/correlation');
 
-const SYMBOLS = ['MNQ', 'MES', 'MYM', 'M2K', 'MCL', 'MGC'];
+const SYMBOLS = ['MNQ', 'MES', 'MGC'];
 
 const tickBuffer = {};
 

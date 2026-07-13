@@ -12,6 +12,7 @@ const { setState, getDb }  = require('../db/schema');
 const logger        = require('../utils/logger');
 const fs = require('fs');
 const path = require('path');
+const { sendSMS } = require('../utils/notifier');
 
 let symbolParamsCache = null;
 function getSymbolParams(symbol) {
@@ -34,6 +35,19 @@ const { analyzeVolume, classifyVolume } = require('../quantitative/volumeProfile
 const DRY_RUN            = process.env.DRY_RUN === 'true';
 const ATR_MULTIPLIER     = parseFloat(process.env.ATR_MULTIPLIER        || '3.5');
 
+function getGlobexSessionDate() {
+  const now = new Date();
+  const etNow = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  // After 5 PM ET, it's the NEXT Globex session date
+  if (etNow.getHours() >= 17) {
+    etNow.setDate(etNow.getDate() + 1);
+  }
+  const yyyy = etNow.getFullYear();
+  const mm = String(etNow.getMonth() + 1).padStart(2, '0');
+  const dd = String(etNow.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 /**
  * Full trade execution pipeline based purely on math.
  * @param {{ bundle }} params
@@ -45,19 +59,28 @@ async function execute({ bundle }) {
   const history = bundle.history;
   const history5m = bundle.history5m;
 
+  const params = getSymbolParams(symbol);
+  if (Object.keys(params).length === 0) {
+    logger.warn('Trade rejected: Symbol has no optimized parameters', { symbol });
+    return { executed: false, reason: 'Symbol not optimized or profitable in symbolParams.json' };
+  }
+
   const signal = vwapReversion.evaluate(history, symbol);
   if (!signal) {
     return { executed: false, reason: 'VWAP Reversion conditions not met' };
   }
 
   // Session time filter (EST)
-  const now = new Date();
+  const currentCandle = history[history.length - 1];
+  let cTime = currentCandle.timestamp || currentCandle.time;
+  if (typeof cTime === 'string') cTime = new Date(cTime).getTime();
+  else if (typeof cTime === 'number' && cTime < 10000000000) cTime *= 1000;
+  
+  const now = new Date(cTime || Date.now());
   const nyTimeStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
   const nyTime = new Date(nyTimeStr);
-  const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
-  if (!((timeVal >= 945 && timeVal <= 1130) || (timeVal >= 1330 && timeVal <= 1530))) {
-    logger.warn('Trade blocked: Outside optimal trading hours', { timeVal });
-    return { executed: false, reason: 'Outside optimal trading session' };
+  if (nyTime.getHours() === 16) {
+    return { executed: false, reason: 'Market Closed (16:00 - 17:00 ET)' };
   }
   
   const direction = signal.action;
@@ -67,18 +90,20 @@ async function execute({ bundle }) {
   
   const volClass = classifyVolume(history).toUpperCase();
 
-  // Macro Trend Alignment (200 SMA) - Only for trend-following strategies
-  if (regime !== 'mean-reverting') {
+  // Macro Trend Alignment: allow VWAP mean-reversion entries (counter-trend is the strategy),
+  // but block entries when price is in a SEVERE trend (>2% from 200 SMA) to avoid catching knives.
+  if (history.length >= 50) {
     const smaPeriod = Math.min(history.length, 200);
     const smaSlice = history.slice(-smaPeriod);
     const sma = smaSlice.reduce((sum, b) => sum + b.close, 0) / smaPeriod;
-    if (direction === 'LONG' && price < sma) {
-        logger.warn(`Trade blocked: LONG but price (${price}) < 200 SMA (${sma})`);
-        return { executed: false, reason: 'Macro Trend Alignment: Counter-trend LONG' };
+    const smaDeviation = (price - sma) / sma;
+    if (direction === 'LONG' && smaDeviation < -0.02) {
+      logger.warn(`Trade blocked: LONG but price is >2% below 200 SMA — severe downtrend`, { symbol, price: price.toFixed(2), sma: sma.toFixed(2), deviation: (smaDeviation * 100).toFixed(2) + '%' });
+      return { executed: false, reason: 'Macro Trend: Severe downtrend (>2% below 200 SMA), no LONG' };
     }
-    if (direction === 'SHORT' && price > sma) {
-        logger.warn(`Trade blocked: SHORT but price (${price}) > 200 SMA (${sma})`);
-        return { executed: false, reason: 'Macro Trend Alignment: Counter-trend SHORT' };
+    if (direction === 'SHORT' && smaDeviation > 0.02) {
+      logger.warn(`Trade blocked: SHORT but price is >2% above 200 SMA — severe uptrend`, { symbol, price: price.toFixed(2), sma: sma.toFixed(2), deviation: (smaDeviation * 100).toFixed(2) + '%' });
+      return { executed: false, reason: 'Macro Trend: Severe uptrend (>2% above 200 SMA), no SHORT' };
     }
   }
 
@@ -130,8 +155,16 @@ async function execute({ bundle }) {
   try {
     const db = getDb();
     openTrades = db.prepare("SELECT * FROM trades WHERE status = 'open'").all();
+
+    // Max 3 trades per day cap — $200 risk × 3 = $600 max daily exposure, well under $1,000 DLL
+    const today = getGlobexSessionDate();
+    const todayTradesCount = db.prepare("SELECT COUNT(*) as count FROM trades WHERE timestamp LIKE ?").get(today + '%').count;
+    if (todayTradesCount >= 3) {
+      logger.warn('Trade blocked: Max trades per day (3) reached', { todayTradesCount });
+      return { executed: false, reason: 'Max 3 trades per day reached' };
+    }
   } catch (err) {
-    logger.warn('Failed to fetch open trades from DB', { error: err.message });
+    logger.warn('Failed to fetch trades from DB', { error: err.message });
   }
 
   // Step 4: Validation (Skip Alpaca validation for now, or adapt it)
@@ -205,6 +238,7 @@ async function execute({ bundle }) {
     
     order = { orderId: tsResponse.orderId || 'ts-order-' + Date.now() };
     logger.info(`✅ Market order submitted to TopstepX: ${tsSymbol} | OrderID: ${order.orderId} | Qty: ${sizing.qty}`);
+    sendSMS(`🚀 AI Trader ENTRY: ${direction} ${sizing.qty}x ${symbol} @ $${price}\nStop: $${atrStop.toFixed(2)}\nTarget: $${atrTarget.toFixed(2)}`);
   } catch (err) {
     const errorDetails = err.response ? err.response.data : err.message;
     logger.error('❌ Order submission failed', { symbol: tsSymbol, error: err.message, details: errorDetails });

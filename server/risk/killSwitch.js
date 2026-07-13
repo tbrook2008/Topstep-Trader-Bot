@@ -33,7 +33,7 @@ function getReason() {
  * Enforces both the $800 Daily Loss Limit AND the $1200 Consistency Profit Cap.
  */
 function autoCheckDailyLimits(dailyPnl) {
-  const maxLossUsd = parseFloat(process.env.MAX_DAILY_LOSS_USD || '800');
+  const maxLossUsd = parseFloat(process.env.MAX_DAILY_LOSS_USD || '900');
   const maxProfitUsd = 1200; // Hardcoded Topstep 50k consistency cap
 
   if (dailyPnl <= -maxLossUsd && !isActive()) {
