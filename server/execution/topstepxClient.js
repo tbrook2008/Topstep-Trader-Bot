@@ -7,6 +7,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Setup axios to use keepAlive to prevent continuous DNS lookups that cause ENOTFOUND
 axios.defaults.httpsAgent = new https.Agent({ keepAlive: true, family: 4 });
+axios.defaults.timeout = 5000; // 5-second timeout for rapid failover
 
 class TopstepXClient {
     constructor() {
