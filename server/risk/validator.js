@@ -60,9 +60,9 @@ async function runChecks({ consensus, symbol, positionDollars, alpacaAccount, op
       detail: 'Alpaca does not support short selling cryptocurrencies',
     },
     {
-      name: 'Absolute Minimum Balance Guard ($48,500)',
-      passed: balance > 48500,
-      detail: `Current balance ($${balance}) must stay above $48,500. Below $48,000 = Topstep MLL breach and account termination.`,
+      name: 'Absolute Minimum Balance Guard ($48,050)',
+      passed: balance > 48050,
+      detail: `Current balance ($${balance}) must stay above $48,050. Below $48,000 = Topstep MLL breach and account termination.`,
     },
 
     {
