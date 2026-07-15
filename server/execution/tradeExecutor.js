@@ -27,7 +27,8 @@ function getSymbolParams(symbol) {
   return symbolParamsCache[symbol] || {};
 }
 
-const vwapReversion = require('../quantitative/vwapReversion');
+const vwapReversion  = require('../quantitative/vwapReversion');
+const hybridStrategy = require('../quantitative/hybridStrategy');
 const propRiskManager = require('../risk/propRiskManager');
 const { calculateATR, getDynamicATRMultiplier } = require('../quantitative/atr');
 const { analyzeVolume, classifyVolume } = require('../quantitative/volumeProfile');
@@ -65,10 +66,13 @@ async function execute({ bundle }) {
     return { executed: false, reason: 'Symbol not optimized or profitable in symbolParams.json' };
   }
 
-  const signal = vwapReversion.evaluate(history, symbol);
+  // Route through the regime-aware hybrid strategy
+  // (trending market → MACD trend-following, ranging market → VWAP reversion, chop → no trade)
+  const signal = hybridStrategy.evaluate(history, symbol);
   if (!signal) {
-    return { executed: false, reason: 'VWAP Reversion conditions not met' };
+    return { executed: false, reason: 'Hybrid strategy: no signal (regime=chop or conditions unmet)' };
   }
+  logger.info(`Signal generated`, { symbol, strategy: signal.strategy, regime: signal.regime, action: signal.action });
 
   // Session time filter (EST)
   const currentCandle = history[history.length - 1];
