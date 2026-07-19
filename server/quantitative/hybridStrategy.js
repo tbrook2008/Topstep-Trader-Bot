@@ -19,6 +19,7 @@ const { computeADX }      = require('./adx');
 const { computeEMA }      = require('./macd');
 const { calculateATR }    = require('./atr');
 const vwapReversion       = require('./vwapReversion');
+const orbStrategy         = require('./orbStrategy');
 const fs   = require('fs');
 const path = require('path');
 
@@ -160,7 +161,12 @@ function trendSignal(history, symbol) {
 
 /**
  * Evaluate the hybrid strategy for a given bar history.
- * 
+ * Signal priority:
+ *   1. Opening Range Breakout (fires at 10 AM ET, once per day)
+ *   2. MACD Trend-Following  (fires when Hurst shows trending)
+ *   3. VWAP Mean Reversion   (fires when Hurst shows ranging)
+ *   4. null                  (chop regime or no conditions met)
+ *
  * @param {Array} history - OHLCV bar array (oldest first)
  * @param {string} symbol
  * @returns {Object|null} signal object or null
@@ -168,6 +174,7 @@ function trendSignal(history, symbol) {
 function evaluate(history, symbol) {
   if (!history || history.length < 60) return null;
 
+  // Regime-based routing
   const regime = classifyRegime(history);
 
   if (regime === 'trending') {
@@ -175,7 +182,6 @@ function evaluate(history, symbol) {
   }
 
   if (regime === 'ranging') {
-    // Delegate to existing VWAP reversion (already gated by RSI 30/70, 2.5σ, vol 1.5×)
     const vwapSig = vwapReversion.evaluate(history, symbol);
     if (vwapSig) {
       return { ...vwapSig, regime: 'ranging', strategy: 'VWAP_REVERSION' };
@@ -183,7 +189,7 @@ function evaluate(history, symbol) {
     return null;
   }
 
-  // 'chop' regime — sit on hands
+  // chop regime — sit on hands
   return null;
 }
 
