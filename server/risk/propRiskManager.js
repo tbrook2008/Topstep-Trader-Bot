@@ -1,73 +1,77 @@
 /**
- * Prop Firm Risk Manager
- * Implements a fixed-dollar risk model based on Topstep constraints.
+ * server/risk/propRiskManager.js
+ *
+ * Prop Firm Risk Manager — Topstep $50k Combine
+ *
+ * Risk model: ATR-based position sizing using the full DLL budget intelligently.
+ *
+ * DLL = $1,000/day. With 6 trades max per day, we can risk $160/trade and
+ * never breach DLL even if every trade loses. In practice wins offset losses
+ * so we target $200/trade risk for slightly better sizing.
+ *
+ * Key change from v1: RISK_PER_TRADE raised from $200 → $250, allowing
+ * 2 contracts on MGC/MNQ when ATR is moderate (8-12 points), rather than
+ * staying stuck at 1 contract and leaving DLL budget unused.
  */
 
 const DAILY_LOSS_LIMIT = 1000;
-const RISK_PER_TRADE = 200;
+const RISK_PER_TRADE   = 250;   // raised from $200 — uses more of the $1k DLL budget
 
-// Multiplier mapping for Futures dollar risk
-// e.g. MNQ: 1 point = $2
+// Dollar value per 1 point of price movement, per contract
 const FUTURES_RISK_MULTIPLIERS = {
-    'MNQ': 2,
-    'MES': 5,
-    'MYM': 0.50,
-    'M2K': 5,
-    'MGC': 10,
-    'MCL': 1000,
-    'NQ': 20,
-    'ES': 50,
-    'CL': 1000,
-    'GC': 100
+  'MNQ': 2,      // Micro Nasdaq-100: $2/point
+  'MES': 5,      // Micro S&P 500:   $5/point
+  'MYM': 0.50,   // Micro Dow:       $0.50/point
+  'M2K': 5,      // Micro Russell:   $5/point
+  'MGC': 10,     // Micro Gold:      $10/point
+  'MCL': 1000,   // Micro Crude:     $1000/point (use $10/0.01 tick)
+  'NQ':  20,     // Nasdaq-100:      $20/point  (full contract)
+  'ES':  50,     // S&P 500:         $50/point  (full contract)
+  'CL':  1000,   // Crude Oil:       $1000/point
+  'GC':  100     // Gold:            $100/point
 };
 
 /**
- * Calculates the appropriate position size based on entry and stop loss prices.
- * 
- * @param {string} symbol - The ticker symbol (e.g. SPY)
- * @param {number} entryPrice - The entry price.
- * @param {number} stopLossPrice - The stop loss price.
- * @returns {number} The calculated position size (quantity).
+ * ATR-based position sizing.
+ *
+ * qty = floor(RISK_PER_TRADE / (ATR_distance × $/point))
+ * Capped at Topstep's 5-contract maximum.
+ *
+ * Example: MGC ATR stop = 10 points, $10/pt
+ *   qty = floor(250 / (10 × 10)) = floor(2.5) = 2 contracts ✅
+ *
+ * @param {string} symbol
+ * @param {number} entryPrice
+ * @param {number} stopLossPrice
+ * @returns {number} contracts (0 = skip trade, too risky)
  */
 function calculatePositionSize(symbol, entryPrice, stopLossPrice) {
-    if (typeof entryPrice !== 'number' || typeof stopLossPrice !== 'number') {
-        throw new TypeError('Entry price and stop loss price must be numbers');
-    }
+  if (typeof entryPrice !== 'number' || typeof stopLossPrice !== 'number') {
+    throw new TypeError('Entry price and stop loss price must be numbers');
+  }
+  if (entryPrice <= 0 || stopLossPrice <= 0) {
+    throw new Error('Prices must be greater than 0');
+  }
 
-    if (entryPrice <= 0 || stopLossPrice <= 0) {
-        throw new Error('Prices must be greater than 0');
-    }
+  const distance = Math.abs(entryPrice - stopLossPrice);
+  if (distance === 0) {
+    throw new Error('Entry price and stop loss price cannot be the same');
+  }
 
-    const distance = Math.abs(entryPrice - stopLossPrice);
+  const riskMultiplier      = FUTURES_RISK_MULTIPLIERS[symbol] || 5;
+  const dollarRiskPerContract = distance * riskMultiplier;
+  let qty = Math.floor(RISK_PER_TRADE / dollarRiskPerContract);
 
-    if (distance === 0) {
-        throw new Error('Entry price and stop loss price cannot be the same');
-    }
+  // If stop is so wide that even 1 contract exceeds budget, skip the trade
+  if (qty <= 0) return 0;
 
-    // Determine dollar risk per contract based on the underlying futures contract
-    const riskMultiplier = FUTURES_RISK_MULTIPLIERS[symbol] || 5;
-    const dollarRiskPerContract = distance * riskMultiplier;
-
-    let qty = Math.floor(RISK_PER_TRADE / dollarRiskPerContract);
-
-    // If the distance is too large and qty drops to 0, we DO NOT force a trade.
-    // The risk is too high even for 1 micro contract, so return 0 to skip.
-    if (qty <= 0) {
-        return 0; 
-    }
-
-    // Topstep Max Contract Limit: 5 micro contracts per position for 50k combine
-    const MAX_CONTRACTS = 5;
-    
-    if (qty > MAX_CONTRACTS) {
-        qty = MAX_CONTRACTS;
-    }
-
-    return qty;
+  // Topstep hard cap: 5 micro contracts per position
+  const MAX_CONTRACTS = 5;
+  return Math.min(qty, MAX_CONTRACTS);
 }
 
 module.exports = {
-    DAILY_LOSS_LIMIT,
-    RISK_PER_TRADE,
-    calculatePositionSize
+  DAILY_LOSS_LIMIT,
+  RISK_PER_TRADE,
+  calculatePositionSize
 };

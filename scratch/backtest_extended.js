@@ -21,14 +21,12 @@ const axios = require('axios');
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const SYMBOLS      = ['MES', 'MGC'];
+const SYMBOLS      = ['MGC', 'MNQ'];
 const TOTAL_DAYS   = 60;       // how far back to go
 const CHUNK_DAYS   = 8;        // size of each API fetch window
 const BAR_LIMIT    = 4800;     // bars per chunk (stay under 5000 limit)
 const HISTORY_WARM = 200;      // bars needed for indicators to warm up
 const COMMISSION   = 0.50;     // $ per contract per side
-
-const MULTIPLIERS  = { MES: 5, MGC: 10, MNQ: 2, MCL: 100, MYM: 0.5, M2K: 5 };
 
 // RTH session filter: 9:30 AM – 3:00 PM ET
 const RTH_START = 9 * 60 + 30;
@@ -37,16 +35,19 @@ const RTH_END   = 15 * 60 + 0;
 // ─── Parameter grid ───────────────────────────────────────────────────────────
 
 const GRID = {
-  adxThreshold:   [18, 22, 25],
-  trendTpMult:    [1.5, 2.0, 2.5],
-  trendSlMult:    [0.8, 1.0, 1.2],
-  minVolumeRatio: [1.2, 1.5],
-  // VWAP params (kept fixed — already optimized in previous run)
-  sdMultiplier:       [2.5],
-  rsiOversold:        [30],
-  rsiOverbought:      [70],
+  adxThreshold:   [15, 20, 25],
+  trendTpMult:    [1.2, 1.5, 2.0],
+  trendSlMult:    [0.8, 1.0],
+  minVolumeRatio: [1.1, 1.2],
+  sdMultiplier:       [2.0, 2.5],
+  rsiOversold:        [35],
+  rsiOverbought:      [65],
   stopLossMultiplier: [1.5],
 };
+
+// Dollar per point per contract
+const MULTIPLIERS = { MES: 5, MNQ: 2, MGC: 10, MCL: 1000, M2K: 5 };
+const RISK_PER_TRADE = 250; // matches propRiskManager.js
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -136,19 +137,36 @@ async function fetchChunked(symbol) {
 
 function runSingle(data, symbol, params) {
   const mult = MULTIPLIERS[symbol] || 2;
-  orbStrategy.resetAll(); // reset ORB intraday state for clean sweep
+
+  // Convert 1-min bars to 5-min before strategy evaluation (matches live bot)
+  function agg1mTo5m(bars) {
+    const out = [];
+    for (let i = 0; i < bars.length; i += 5) {
+      const chunk = bars.slice(i, i + 5);
+      if (!chunk.length) continue;
+      out.push({
+        open:      chunk[0].open,
+        high:      Math.max(...chunk.map(b => b.high)),
+        low:       Math.min(...chunk.map(b => b.low)),
+        close:     chunk[chunk.length - 1].close,
+        volume:    chunk.reduce((s, b) => s + b.volume, 0),
+        timestamp: chunk[0].timestamp,
+      });
+    }
+    return out;
+  }
 
   let pos = null, equity = 0, wins = 0, trades = 0;
   const curve = [0];
   const results = [];
-  let history = [];
+  let history = []; // 1-min rolling buffer
 
   for (const bar of data) {
     history.push(bar);
     if (history.length > HISTORY_WARM) history.shift();
     if (history.length < HISTORY_WARM) continue;
 
-    // Manage open position
+    // Manage open position (use 1-min bars for exit checks — more precise)
     if (pos) {
       let pnl = null;
       if (pos.dir === 'LONG') {
@@ -167,15 +185,23 @@ function runSingle(data, symbol, params) {
     // Only enter during RTH
     if (!isRTH(bar)) continue;
 
+    // Compute 5-min bars from current 1-min history window
+    const history5m = agg1mTo5m(history);
+    if (history5m.length < 40) continue;
+
     global.OPTIMIZE_PARAMS = params;
-    const sig = hybridStrategy.evaluate(history, symbol);
+    const sig = hybridStrategy.evaluate(history5m, symbol);
     if (!sig) continue;
 
     const risk   = Math.abs(sig.entry - sig.stopLoss);
     const reward = Math.abs(sig.target - sig.entry);
     if (risk === 0 || reward / risk < 1.2) continue;
 
-    pos = { dir: sig.action, entry: sig.entry, sl: sig.stopLoss, tp: sig.target, qty: 1 };
+    // ATR-based position sizing (matches live propRiskManager)
+    const dollarRiskPerContract = risk * (MULTIPLIERS[symbol] || 5);
+    const qty = Math.min(5, Math.max(1, Math.floor(RISK_PER_TRADE / dollarRiskPerContract)));
+
+    pos = { dir: sig.action, entry: sig.entry, sl: sig.stopLoss, tp: sig.target, qty };
   }
 
   return {

@@ -70,6 +70,12 @@ async function primeHistory(symbol) {
       barsHistory[symbol] = [];
     }
   } catch (err) {
+    if (err.response && err.response.status === 401) {
+      logger.info(`[TopstepX] Token expired during primeHistory. Re-authenticating...`);
+      topstepClient.jwtToken = null;
+      await topstepClient.authenticate();
+      return primeHistory(symbol);
+    }
     logger.error(`Failed to prime history for ${symbol}`, { error: err.message });
     barsHistory[symbol] = [];
   }

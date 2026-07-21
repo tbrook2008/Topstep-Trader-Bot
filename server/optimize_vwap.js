@@ -16,7 +16,9 @@ const topstepClient = require('./execution/topstepxClient');
 const axios = require('axios');
 
 async function fetchHistoricalData(symbol) {
-  await topstepClient.authenticate();
+  if (!topstepClient.jwtToken) {
+    await topstepClient.authenticate();
+  }
   const contractId = await topstepClient.getContractId(symbol);
   if (!contractId) return [];
   
@@ -122,12 +124,23 @@ async function runOptimization() {
 
               const signal = vwapReversion.evaluate(history);
               if (signal) {
-                openPosition = {
-                  direction: signal.action,
-                  entryPrice: signal.entry,
-                  stopLoss: signal.stopLoss,
-                  takeProfit: signal.target
-                };
+                let cTime = bar.timestamp || bar.time;
+                if (typeof cTime === 'string') cTime = new Date(cTime).getTime();
+                else if (typeof cTime === 'number' && cTime < 10000000000) cTime *= 1000;
+                
+                const now = new Date(cTime || Date.now());
+                const nyTimeStr = now.toLocaleString('en-US', { timeZone: 'America/New_York' });
+                const nyTime = new Date(nyTimeStr);
+                const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
+                
+                if ((timeVal >= 945 && timeVal <= 1130) || (timeVal >= 1330 && timeVal <= 1530)) {
+                  openPosition = {
+                    direction: signal.action,
+                    entryPrice: signal.entry,
+                    stopLoss: signal.stopLoss,
+                    takeProfit: signal.target
+                  };
+                }
               }
             }
 

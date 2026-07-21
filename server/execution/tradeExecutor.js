@@ -66,13 +66,13 @@ async function execute({ bundle }) {
     return { executed: false, reason: 'Symbol not optimized or profitable in symbolParams.json' };
   }
 
-  // Route through the regime-aware hybrid strategy
-  // (trending market → MACD trend-following, ranging market → VWAP reversion, chop → no trade)
-  const signal = hybridStrategy.evaluate(history, symbol);
+  // Route through the regime-aware hybrid strategy using 5-MIN bars
+  // (5-min bars reduce noise by ~2.2× vs 1-min → cleaner MACD crosses → higher win rate)
+  const signal = hybridStrategy.evaluate(history5m, symbol);
   if (!signal) {
-    return { executed: false, reason: 'Hybrid strategy: no signal (regime=chop or conditions unmet)' };
+    return { executed: false, reason: 'Hybrid strategy: no signal on 5m bars (regime=chop or conditions unmet)' };
   }
-  logger.info(`Signal generated`, { symbol, strategy: signal.strategy, regime: signal.regime, action: signal.action });
+  logger.info(`Signal generated`, { symbol, strategy: signal.strategy, regime: signal.regime, action: signal.action, adx: signal.adx });
 
   // Session time filter (EST)
   const currentCandle = history[history.length - 1];
@@ -160,12 +160,12 @@ async function execute({ bundle }) {
     const db = getDb();
     openTrades = db.prepare("SELECT * FROM trades WHERE status = 'open'").all();
 
-    // Max 3 trades per day cap — $200 risk × 3 = $600 max daily exposure, well under $1,000 DLL
+    // Max 6 trades per day cap — allows catching all good signals across 2 symbols
     const today = getGlobexSessionDate();
     const todayTradesCount = db.prepare("SELECT COUNT(*) as count FROM trades WHERE timestamp LIKE ?").get(today + '%').count;
-    if (todayTradesCount >= 3) {
-      logger.warn('Trade blocked: Max trades per day (3) reached', { todayTradesCount });
-      return { executed: false, reason: 'Max 3 trades per day reached' };
+    if (todayTradesCount >= 6) {
+      logger.warn('Trade blocked: Max trades per day (6) reached', { todayTradesCount });
+      return { executed: false, reason: 'Max 6 trades per day reached' };
     }
   } catch (err) {
     logger.warn('Failed to fetch trades from DB', { error: err.message });

@@ -210,13 +210,18 @@ function evaluate(history, symbol = 'SPY') {
     const extendedBelow = currentCandle.close <= lowerBand;
     const isGreen = currentCandle.close > currentCandle.open;
     if (extendedBelow && rsi <= rsiOversold && isHighVolume && isGreen) {
-        return {
-            action: 'LONG',
-            entry: currentCandle.close,
-            target: currentCandle.close + (tpMultiplier * atr),
-            stopLoss: currentCandle.close - (slMultiplier * atr),
-            metadata: { rsi, vwap, lowerBand, volume: currentCandle.volume, volumeSMA, atr }
-        };
+        const stopLoss = currentCandle.close - (slMultiplier * atr);
+        const risk = currentCandle.close - stopLoss;
+        const reward = vwap - currentCandle.close;
+        if (risk > 0 && (reward / risk) >= 1.25) {
+            return {
+                action: 'LONG',
+                entry: currentCandle.close,
+                target: vwap,
+                stopLoss: stopLoss,
+                metadata: { rsi, vwap, lowerBand, volume: currentCandle.volume, volumeSMA, atr, rr: reward/risk }
+            };
+        }
     }
 
     // SHORT Signal
@@ -224,13 +229,18 @@ function evaluate(history, symbol = 'SPY') {
     const extendedAbove = currentCandle.close >= upperBand;
     const isRed = currentCandle.close < currentCandle.open;
     if (extendedAbove && rsi >= rsiOverbought && isHighVolume && isRed) {
-        return {
-            action: 'SHORT',
-            entry: currentCandle.close,
-            target: currentCandle.close - (tpMultiplier * atr),
-            stopLoss: currentCandle.close + (slMultiplier * atr),
-            metadata: { rsi, vwap, upperBand, volume: currentCandle.volume, volumeSMA, atr }
-        };
+        const stopLoss = currentCandle.close + (slMultiplier * atr);
+        const risk = stopLoss - currentCandle.close;
+        const reward = currentCandle.close - vwap;
+        if (risk > 0 && (reward / risk) >= 1.25) {
+            return {
+                action: 'SHORT',
+                entry: currentCandle.close,
+                target: vwap,
+                stopLoss: stopLoss,
+                metadata: { rsi, vwap, upperBand, volume: currentCandle.volume, volumeSMA, atr, rr: reward/risk }
+            };
+        }
     }
 
     return null;

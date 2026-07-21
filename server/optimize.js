@@ -21,6 +21,8 @@ topstepClient.flattenAllPositions = async () => ({ success: true });
 validator.runChecks = async () => ({ passed: true });
 tradeLogger.logTrade = () => 'mock-trade-id';
 memory.saveSetup = () => {};
+const notifier = require('./utils/notifier');
+notifier.sendSMS = () => {};
 schema.setState = () => {};
 
 process.env.DRY_RUN = 'false';
@@ -161,8 +163,7 @@ async function optimizeSymbol(symbol, data) {
       const date = new Date(bar.timestamp);
       const nyTimeStr = date.toLocaleString('en-US', { timeZone: 'America/New_York' });
       const nyTime = new Date(nyTimeStr);
-      const timeVal = nyTime.getHours() * 100 + nyTime.getMinutes();
-      if (!((timeVal >= 945 && timeVal <= 1130) || (timeVal >= 1330 && timeVal <= 1530))) {
+      if (nyTime.getHours() === 16) {
         continue;
       }
 
