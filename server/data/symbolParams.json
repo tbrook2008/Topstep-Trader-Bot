@@ -64,5 +64,27 @@
     "adxThreshold": 15,
     "trendTpMult": 1.2,
     "trendSlMult": 0.8
+  },
+  "GC": {
+    "minVolumeRatio": 1.2,
+    "sdMultiplier": 2,
+    "rsiOversold": 35,
+    "rsiOverbought": 65,
+    "stopLossMultiplier": 1.5,
+    "takeProfitMultiplier": 2,
+    "adxThreshold": 15,
+    "trendTpMult": 2,
+    "trendSlMult": 0.8
+  },
+  "NQ": {
+    "minVolumeRatio": 1.2,
+    "sdMultiplier": 2.5,
+    "rsiOversold": 35,
+    "rsiOverbought": 65,
+    "stopLossMultiplier": 1.5,
+    "takeProfitMultiplier": 2,
+    "adxThreshold": 15,
+    "trendTpMult": 1.5,
+    "trendSlMult": 1
   }
 }

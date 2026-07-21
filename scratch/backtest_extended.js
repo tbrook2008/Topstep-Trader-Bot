@@ -21,7 +21,7 @@ const axios = require('axios');
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const SYMBOLS      = ['MGC', 'MNQ'];
+const SYMBOLS      = ['GC', 'NQ'];
 const TOTAL_DAYS   = 60;       // how far back to go
 const CHUNK_DAYS   = 8;        // size of each API fetch window
 const BAR_LIMIT    = 4800;     // bars per chunk (stay under 5000 limit)
@@ -46,8 +46,9 @@ const GRID = {
 };
 
 // Dollar per point per contract
-const MULTIPLIERS = { MES: 5, MNQ: 2, MGC: 10, MCL: 1000, M2K: 5 };
-const RISK_PER_TRADE = 250; // matches propRiskManager.js
+const MULTIPLIERS = { MES: 5, MNQ: 2, MGC: 10, MCL: 1000, M2K: 5, GC: 100, NQ: 20, ES: 50 };
+// Risk budget per trade — matches propRiskManager.js symbol-specific values
+const RISK_PER_TRADE_MAP = { GC: 500, NQ: 400, ES: 400, MGC: 250, MNQ: 250, MES: 250 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -197,9 +198,10 @@ function runSingle(data, symbol, params) {
     const reward = Math.abs(sig.target - sig.entry);
     if (risk === 0 || reward / risk < 1.2) continue;
 
-    // ATR-based position sizing (matches live propRiskManager)
+    // ATR-based position sizing (matches live propRiskManager, symbol-specific budget)
+    const riskBudget = RISK_PER_TRADE_MAP[symbol] || 250;
     const dollarRiskPerContract = risk * (MULTIPLIERS[symbol] || 5);
-    const qty = Math.min(5, Math.max(1, Math.floor(RISK_PER_TRADE / dollarRiskPerContract)));
+    const qty = Math.min(5, Math.max(1, Math.floor(riskBudget / dollarRiskPerContract)));
 
     pos = { dir: sig.action, entry: sig.entry, sl: sig.stopLoss, tp: sig.target, qty };
   }
